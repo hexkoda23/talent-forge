@@ -22,6 +22,14 @@ import Leaderboard from "./pages/dashboard/Leaderboard.tsx";
 import Community from "./pages/dashboard/Community.tsx";
 import Checkpoints from "./pages/dashboard/Checkpoints.tsx";
 import Achievements from "./pages/dashboard/Achievements.tsx";
+import { AdminLayout } from "./components/AdminLayout.tsx";
+import AdminOverview from "./pages/admin/Overview.tsx";
+import AdminApplications from "./pages/admin/Applications.tsx";
+import AdminStudents from "./pages/admin/Students.tsx";
+import AdminCodeMonitor from "./pages/admin/CodeMonitor.tsx";
+import AdminModeration from "./pages/admin/Moderation.tsx";
+import AdminAuditLog from "./pages/admin/AuditLog.tsx";
+import AdminRoles from "./pages/admin/Roles.tsx";
 
 const queryClient = new QueryClient();
 
@@ -50,6 +58,15 @@ const App = () => (
             <Route path="logbook" element={<Logbook />} />
             <Route path="profile" element={<Profile />} />
             <Route path="notifications" element={<Notifications />} />
+          </Route>
+          <Route path="/admin" element={<AdminLayout />}>
+            <Route index element={<AdminOverview />} />
+            <Route path="applications" element={<AdminApplications />} />
+            <Route path="students" element={<AdminStudents />} />
+            <Route path="code" element={<AdminCodeMonitor />} />
+            <Route path="moderation" element={<AdminModeration />} />
+            <Route path="audit" element={<AdminAuditLog />} />
+            <Route path="roles" element={<AdminRoles />} />
           </Route>
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
