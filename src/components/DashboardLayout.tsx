@@ -13,6 +13,10 @@ import {
   Search,
   Flame,
   Sparkles,
+  Map,
+  Crown,
+  MessagesSquare,
+  Award,
 } from "lucide-react";
 import { Logo } from "./Logo";
 import { Button } from "@/components/ui/button";
@@ -20,9 +24,13 @@ import { cn } from "@/lib/utils";
 
 const nav = [
   { to: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
+  { to: "/dashboard/checkpoints", label: "Checkpoints", icon: Map },
   { to: "/dashboard/quests", label: "Quests & Raids", icon: Trophy },
+  { to: "/dashboard/leaderboard", label: "Leaderboard", icon: Crown },
   { to: "/dashboard/workspace", label: "Workspace", icon: Code2 },
+  { to: "/dashboard/community", label: "Community", icon: MessagesSquare },
   { to: "/dashboard/logbook", label: "Logbook", icon: BookOpen },
+  { to: "/dashboard/achievements", label: "Achievements", icon: Award },
   { to: "/dashboard/notifications", label: "Notifications", icon: Bell },
   { to: "/dashboard/profile", label: "Profile", icon: User },
 ];
@@ -106,6 +114,13 @@ export const DashboardLayout = () => {
                 <Sparkles className="h-4 w-4 text-secondary" />
                 <span className="font-mono text-sm font-semibold">2,480</span>
                 <span className="text-xs text-muted-foreground">XP</span>
+                <span className="mx-1 h-4 w-px bg-border" />
+                <span className="font-mono text-sm font-semibold text-accent">4</span>
+                <span className="text-xs text-muted-foreground">SP</span>
+              </div>
+              <div className="hidden md:flex items-center gap-1.5 px-3 h-10 rounded-lg bg-muted border border-border">
+                <Crown className="h-4 w-4 text-warning" />
+                <span className="font-mono text-sm font-semibold">#13</span>
               </div>
               <Button variant="ghost" size="icon" className="relative">
                 <Bell className="h-5 w-5" />
