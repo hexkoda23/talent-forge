@@ -13,6 +13,10 @@ import {
   Search,
   Flame,
   Sparkles,
+  Map,
+  Crown,
+  MessagesSquare,
+  Award,
 } from "lucide-react";
 import { Logo } from "./Logo";
 import { Button } from "@/components/ui/button";
@@ -20,9 +24,13 @@ import { cn } from "@/lib/utils";
 
 const nav = [
   { to: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
+  { to: "/dashboard/checkpoints", label: "Checkpoints", icon: Map },
   { to: "/dashboard/quests", label: "Quests & Raids", icon: Trophy },
+  { to: "/dashboard/leaderboard", label: "Leaderboard", icon: Crown },
   { to: "/dashboard/workspace", label: "Workspace", icon: Code2 },
+  { to: "/dashboard/community", label: "Community", icon: MessagesSquare },
   { to: "/dashboard/logbook", label: "Logbook", icon: BookOpen },
+  { to: "/dashboard/achievements", label: "Achievements", icon: Award },
   { to: "/dashboard/notifications", label: "Notifications", icon: Bell },
   { to: "/dashboard/profile", label: "Profile", icon: User },
 ];

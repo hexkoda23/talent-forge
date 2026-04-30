@@ -18,6 +18,10 @@ import Workspace from "./pages/dashboard/Workspace.tsx";
 import Logbook from "./pages/dashboard/Logbook.tsx";
 import Profile from "./pages/dashboard/Profile.tsx";
 import Notifications from "./pages/dashboard/Notifications.tsx";
+import Leaderboard from "./pages/dashboard/Leaderboard.tsx";
+import Community from "./pages/dashboard/Community.tsx";
+import Checkpoints from "./pages/dashboard/Checkpoints.tsx";
+import Achievements from "./pages/dashboard/Achievements.tsx";
 
 const queryClient = new QueryClient();
 
@@ -38,6 +42,10 @@ const App = () => (
           <Route path="/dashboard" element={<DashboardLayout />}>
             <Route index element={<DashboardHome />} />
             <Route path="quests" element={<Quests />} />
+            <Route path="checkpoints" element={<Checkpoints />} />
+            <Route path="leaderboard" element={<Leaderboard />} />
+            <Route path="community" element={<Community />} />
+            <Route path="achievements" element={<Achievements />} />
             <Route path="workspace" element={<Workspace />} />
             <Route path="logbook" element={<Logbook />} />
             <Route path="profile" element={<Profile />} />
