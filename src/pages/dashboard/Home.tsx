@@ -91,10 +91,11 @@ const DashboardHome = () => {
       </div>
 
       {/* Quick links */}
-      <div className="grid sm:grid-cols-3 gap-4">
+      <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
         <QuickLink to="/dashboard/workspace" icon={Code2} title="Open Workspace" desc="Push your latest commits" />
         <QuickLink to="/dashboard/logbook" icon={BookOpen} title="Update Logbook" desc="Today's entry pending" />
         <QuickLink to="/dashboard/quests" icon={Trophy} title="Browse Raids" desc="Team up for big rewards" />
+        <QuickLink to="/dashboard/leaderboard" icon={Trophy} title="Leaderboard" desc="You're #13 — climb!" />
       </div>
     </div>
   );

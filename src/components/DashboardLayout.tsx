@@ -114,6 +114,13 @@ export const DashboardLayout = () => {
                 <Sparkles className="h-4 w-4 text-secondary" />
                 <span className="font-mono text-sm font-semibold">2,480</span>
                 <span className="text-xs text-muted-foreground">XP</span>
+                <span className="mx-1 h-4 w-px bg-border" />
+                <span className="font-mono text-sm font-semibold text-accent">4</span>
+                <span className="text-xs text-muted-foreground">SP</span>
+              </div>
+              <div className="hidden md:flex items-center gap-1.5 px-3 h-10 rounded-lg bg-muted border border-border">
+                <Crown className="h-4 w-4 text-warning" />
+                <span className="font-mono text-sm font-semibold">#13</span>
               </div>
               <Button variant="ghost" size="icon" className="relative">
                 <Bell className="h-5 w-5" />
