@@ -21,7 +21,7 @@ const Landing = () => {
           <a href="#faq" className="hover:text-foreground transition-colors">FAQ</a>
         </nav>
         <div className="flex items-center gap-2">
-          <Link to="/assessment">
+          <Link to="/register">
             <Button variant="hero" size="sm" className="gap-1.5">
               <Gamepad2 className="h-4 w-4" /> Play game
             </Button>
@@ -45,7 +45,7 @@ const Landing = () => {
               actually moves your career — gamified, mentored, and merit-based.
             </p>
             <div className="mt-8 flex flex-wrap items-center gap-3">
-              <Link to="/assessment">
+              <Link to="/register">
                 <Button variant="hero" size="xl" className="gap-2">
                   <Gamepad2 className="h-5 w-5" /> Play game
                 </Button>
@@ -175,7 +175,7 @@ const Landing = () => {
             <div className="mt-8">
               <Link to="/assessment">
                 <Button variant="hero" size="xl" className="gap-2">
-                  <Gamepad2 className="h-5 w-5" /> Play game <ArrowRight className="h-5 w-5" />
+                  <Gamepad2 className="h-5 w-5" /> Complete verification <ArrowRight className="h-5 w-5" />
                 </Button>
               </Link>
             </div>
@@ -202,7 +202,7 @@ const Landing = () => {
             <Section icon={Gamepad2} title="1. Qualify by playing">
               Talent Nation doesn't care about CVs. You qualify by playing three short cognitive games — memory grid,
               logic puzzle and speed reasoning. The system auto-grades your performance instantly. High scorers are
-              auto-accepted. Borderline scores go to human review. Low scores can retry the next cohort.
+              flagged as game-qualified. Every applicant still goes through admin identity verification before admission.
             </Section>
 
             <Section icon={GraduationCap} title="2. Pick your SIWES duration">
@@ -250,7 +250,7 @@ const Landing = () => {
             <Button variant="ghost" onClick={() => setLearnOpen(false)} className="gap-1.5">
               <X className="h-4 w-4" /> Close
             </Button>
-            <Link to="/assessment" onClick={() => setLearnOpen(false)}>
+            <Link to="/register" onClick={() => setLearnOpen(false)}>
               <Button variant="hero" className="gap-2">
                 <Gamepad2 className="h-4 w-4" /> Play the game
               </Button>

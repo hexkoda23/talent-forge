@@ -1,17 +1,31 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { ArrowLeft, ArrowRight, Check, Upload, Camera, IdCard, GraduationCap, User as UserIcon, ShieldCheck, Loader2 } from "lucide-react";
+import {
+  ArrowLeft,
+  ArrowRight,
+  Camera,
+  Check,
+  FileCheck2,
+  Fingerprint,
+  GraduationCap,
+  IdCard,
+  Loader2,
+  Lock,
+  ShieldCheck,
+  Smartphone,
+  Upload,
+  User as UserIcon,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Logo } from "@/components/Logo";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Logo } from "@/components/Logo";
 import { cn } from "@/lib/utils";
 
 const steps = [
-  { id: 1, title: "Basic info", icon: UserIcon },
-  { id: 2, title: "Academic", icon: GraduationCap },
-  { id: 3, title: "Verification", icon: IdCard },
-  { id: 4, title: "Review", icon: ShieldCheck },
+  { id: 1, title: "Identity", icon: UserIcon },
+  { id: 2, title: "Documents", icon: IdCard },
+  { id: 3, title: "Security", icon: ShieldCheck },
 ];
 
 const Register = () => {
@@ -20,30 +34,37 @@ const Register = () => {
   const [submitting, setSubmitting] = useState(false);
   const [data, setData] = useState({
     fullName: "",
-    email: "",
     phone: "",
-    password: "",
+    email: "",
     school: "",
     matric: "",
-    course: "",
-    duration: "6 months",
-    schoolId: null as File | null,
+    level: "",
     nin: "",
-    selfieTaken: false,
-    confirm: false,
+    schoolId: null as File | null,
+    profilePhoto: null as File | null,
+    governmentId: null as File | null,
+    phoneLinkedToNin: false,
+    duplicateConsent: false,
+    truthConsent: false,
   });
 
   const update = (k: keyof typeof data, v: any) => setData((d) => ({ ...d, [k]: v }));
 
-  const next = () => setStep((s) => Math.min(4, s + 1));
+  const ninValid = /^\d{11}$/.test(data.nin);
+  const phoneValid = data.phone.replace(/\D/g, "").length >= 11;
+  const canContinue = useMemo(() => {
+    if (step === 1) return data.fullName.trim() && phoneValid && data.email.includes("@") && data.school.trim();
+    if (step === 2) return data.matric.trim() && data.level && ninValid && data.schoolId && data.profilePhoto && data.governmentId;
+    return data.phoneLinkedToNin && data.duplicateConsent && data.truthConsent;
+  }, [data, ninValid, phoneValid, step]);
+
+  const next = () => setStep((s) => Math.min(3, s + 1));
   const prev = () => setStep((s) => Math.max(1, s - 1));
 
-  const submit = async () => {
+  const submit = () => {
     setSubmitting(true);
-    setTimeout(() => navigate("/assessment"), 900);
+    setTimeout(() => navigate("/assessment/play"), 700);
   };
-
-  const progress = ((step - 1) / 3) * 100;
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -52,192 +73,141 @@ const Register = () => {
         <Link to="/" className="text-sm text-muted-foreground hover:text-foreground">Cancel</Link>
       </header>
 
-      <div className="flex-1 px-5 py-8 lg:py-12 max-w-3xl w-full mx-auto">
-        {/* Progress */}
-        <div className="mb-10">
-          <div className="flex items-center justify-between mb-4">
-            <p className="text-sm font-mono text-muted-foreground">Step {step} of 4</p>
-            <p className="text-sm text-muted-foreground">{Math.round(progress + 25)}% complete</p>
-          </div>
+      <main className="flex-1 px-5 py-8 lg:py-12 max-w-4xl w-full mx-auto">
+        <div className="mb-8">
+          <p className="text-sm font-mono uppercase tracking-widest text-secondary mb-3">// secure entry gate</p>
+          <h1 className="font-display text-3xl lg:text-5xl font-bold">Verify once. Play next.</h1>
+          <p className="text-muted-foreground mt-3 max-w-2xl">
+            TalentOS collects identity, school, NIN, and document evidence before the game opens. Passing the game does not grant access until an admin manually approves your file.
+          </p>
+        </div>
+
+        <div className="mb-8">
           <div className="h-2 bg-muted rounded-full overflow-hidden mb-6">
-            <div
-              className="h-full bg-gradient-primary transition-all duration-500"
-              style={{ width: `${((step) / 4) * 100}%` }}
-            />
+            <div className="h-full bg-gradient-primary transition-all duration-500" style={{ width: `${(step / 3) * 100}%` }} />
           </div>
-          <div className="flex items-center justify-between">
-            {steps.map((s, i) => {
-              const isDone = step > s.id;
-              const isCurrent = step === s.id;
+          <div className="grid grid-cols-3 gap-2">
+            {steps.map((s) => {
+              const done = step > s.id;
+              const current = step === s.id;
               const Icon = s.icon;
               return (
-                <div key={s.id} className="flex flex-col items-center gap-2 flex-1">
-                  <div
-                    className={cn(
-                      "h-10 w-10 rounded-full grid place-items-center border-2 transition-all",
-                      isDone && "bg-accent border-accent text-accent-foreground",
-                      isCurrent && "border-primary bg-primary/10 text-primary glow-primary",
-                      !isDone && !isCurrent && "border-border text-muted-foreground"
-                    )}
-                  >
-                    {isDone ? <Check className="h-5 w-5" /> : <Icon className="h-5 w-5" />}
+                <div key={s.id} className={cn("rounded-xl border p-3 flex items-center gap-3", current ? "border-primary bg-primary/10" : done ? "border-accent/40 bg-accent/10" : "border-border bg-muted/30")}>
+                  <div className={cn("h-9 w-9 rounded-lg grid place-items-center", done ? "bg-accent text-accent-foreground" : "bg-muted text-muted-foreground")}>
+                    {done ? <Check className="h-4 w-4" /> : <Icon className="h-4 w-4" />}
                   </div>
-                  <span className={cn("text-xs font-medium hidden sm:block", isCurrent ? "text-foreground" : "text-muted-foreground")}>
-                    {s.title}
-                  </span>
+                  <div className="min-w-0">
+                    <p className="text-[10px] font-mono text-muted-foreground">STEP {s.id}</p>
+                    <p className="text-sm font-medium truncate">{s.title}</p>
+                  </div>
                 </div>
               );
             })}
           </div>
         </div>
 
-        <div className="glass-panel rounded-2xl p-6 lg:p-8 animate-fade-up" key={step}>
+        <section className="glass-panel rounded-2xl p-6 lg:p-8 animate-fade-up" key={step}>
           {step === 1 && (
             <div className="space-y-5">
-              <Header title="Let's start with the basics" subtitle="Your account, your identity. Make sure it matches your school records." />
-              <Field label="Full name">
-                <Input value={data.fullName} onChange={(e) => update("fullName", e.target.value)} placeholder="Adaeze Okonkwo" />
-              </Field>
-              <div className="grid sm:grid-cols-2 gap-4">
-                <Field label="Email">
-                  <Input type="email" value={data.email} onChange={(e) => update("email", e.target.value)} placeholder="you@school.edu.ng" />
+              <Header title="Basic identity" subtitle="This must match your school records, NIN record, and uploaded documents." />
+              <div className="grid md:grid-cols-2 gap-4">
+                <Field label="Full name">
+                  <Input value={data.fullName} onChange={(e) => update("fullName", e.target.value)} placeholder="Adaeze Okonkwo" />
                 </Field>
                 <Field label="Phone number">
-                  <Input value={data.phone} onChange={(e) => update("phone", e.target.value)} placeholder="+234 …" />
+                  <Input value={data.phone} onChange={(e) => update("phone", e.target.value)} placeholder="+234 801 234 5678" />
+                </Field>
+                <Field label="Email address">
+                  <Input type="email" value={data.email} onChange={(e) => update("email", e.target.value)} placeholder="you@school.edu.ng" />
+                </Field>
+                <Field label="School name">
+                  <Input value={data.school} onChange={(e) => update("school", e.target.value)} placeholder="University of Lagos" />
                 </Field>
               </div>
-              <Field label="Password">
-                <Input type="password" value={data.password} onChange={(e) => update("password", e.target.value)} placeholder="At least 8 characters" />
-              </Field>
+              <TrustPanel items={["Phone number is checked against prior applications", "Email and school name are used for duplicate detection", "Admin approval is required even after a high game score"]} />
             </div>
           )}
 
           {step === 2 && (
             <div className="space-y-5">
-              <Header title="Academic information" subtitle="Tell us where you study and what you study." />
-              <Field label="School name">
-                <Input value={data.school} onChange={(e) => update("school", e.target.value)} placeholder="University of Lagos" />
-              </Field>
-              <div className="grid sm:grid-cols-2 gap-4">
+              <Header title="Academic and legal documents" subtitle="Upload clear evidence so the admin can compare names, photos, NIN, and school identity." />
+              <div className="grid md:grid-cols-3 gap-4">
                 <Field label="Matric number">
-                  <Input value={data.matric} onChange={(e) => update("matric", e.target.value)} placeholder="190401024" />
+                  <Input value={data.matric} onChange={(e) => update("matric", e.target.value)} placeholder="CSC/20/1032" />
                 </Field>
-                <Field label="Course of study">
-                  <Input value={data.course} onChange={(e) => update("course", e.target.value)} placeholder="Computer Science" />
+                <Field label="Level">
+                  <select value={data.level} onChange={(e) => update("level", e.target.value)} className="w-full h-10 rounded-md bg-muted border border-border px-3 text-sm focus:outline-none focus:ring-2 focus:ring-ring">
+                    <option value="">Select level</option>
+                    <option>200L</option>
+                    <option>300L</option>
+                    <option>400L</option>
+                    <option>500L</option>
+                  </select>
+                </Field>
+                <Field label="NIN">
+                  <Input value={data.nin} onChange={(e) => update("nin", e.target.value.replace(/\D/g, "").slice(0, 11))} placeholder="11-digit NIN" inputMode="numeric" />
                 </Field>
               </div>
-              <Field label="SIWES duration">
-                <div className="grid grid-cols-3 gap-2">
-                  {["3 months", "6 months", "12 months"].map((d) => (
-                    <button
-                      key={d}
-                      type="button"
-                      onClick={() => update("duration", d)}
-                      className={cn(
-                        "h-11 rounded-lg border text-sm font-medium transition-all",
-                        data.duration === d
-                          ? "bg-primary/15 border-primary text-foreground"
-                          : "bg-muted border-border text-muted-foreground hover:text-foreground"
-                      )}
-                    >
-                      {d}
-                    </button>
-                  ))}
-                </div>
-              </Field>
+
+              <div className="grid md:grid-cols-3 gap-4">
+                <UploadZone title="School ID card" hint="Clear front image" file={data.schoolId} onChange={(f) => update("schoolId", f)} icon={GraduationCap} />
+                <UploadZone title="Profile picture" hint="Face forward, good light" file={data.profilePhoto} onChange={(f) => update("profilePhoto", f)} icon={Camera} />
+                <UploadZone title="NIN or government ID" hint="NIN slip, passport, or national ID" file={data.governmentId} onChange={(f) => update("governmentId", f)} icon={FileCheck2} />
+              </div>
+
+              <div className={cn("rounded-xl border p-3 text-sm", ninValid ? "border-accent/30 bg-accent/10 text-accent" : "border-warning/30 bg-warning/10 text-warning")}>
+                {ninValid ? "NIN format looks valid: 11 digits captured." : "NIN must be exactly 11 digits before you can continue."}
+              </div>
             </div>
           )}
 
           {step === 3 && (
             <div className="space-y-5">
-              <Header title="Identity verification" subtitle="We need to confirm you're a real SIWES student. This is reviewed manually if anything looks off." />
-
-              <Field label="School ID card (image)">
-                <UploadZone
-                  file={data.schoolId}
-                  onChange={(f) => update("schoolId", f)}
-                  hint="JPG or PNG · max 5MB"
-                  icon={<Upload className="h-5 w-5" />}
-                />
-              </Field>
-
-              <Field label="NIN (National Identification Number)">
-                <Input value={data.nin} onChange={(e) => update("nin", e.target.value)} placeholder="11-digit NIN" maxLength={11} />
-              </Field>
-
-              <Field label="Selfie verification">
-                <SelfieCapture taken={data.selfieTaken} onCapture={() => update("selfieTaken", true)} />
-              </Field>
-            </div>
-          )}
-
-          {step === 4 && (
-            <div className="space-y-5">
-              <Header title="Review your application" subtitle="Double-check everything below. Once submitted, you'll move on to the cognitive assessment." />
-              <div className="space-y-3">
-                <ReviewBlock title="Basic" rows={[
-                  ["Full name", data.fullName || "—"],
-                  ["Email", data.email || "—"],
-                  ["Phone", data.phone || "—"],
-                ]} />
-                <ReviewBlock title="Academic" rows={[
-                  ["School", data.school || "—"],
-                  ["Matric no.", data.matric || "—"],
-                  ["Course", data.course || "—"],
-                  ["Duration", data.duration],
-                ]} />
-                <ReviewBlock title="Verification" rows={[
-                  ["School ID", data.schoolId ? "Uploaded ✓" : "—"],
-                  ["NIN", data.nin ? `${data.nin.slice(0, 3)}•••••${data.nin.slice(-2)}` : "—"],
-                  ["Selfie", data.selfieTaken ? "Captured ✓" : "—"],
-                ]} />
+              <Header title="Security validation" subtitle="These checks help prevent one person from registering multiple times or entering with mismatched identity data." />
+              <div className="grid md:grid-cols-3 gap-4">
+                <SecurityCard icon={Fingerprint} title="Duplicate lock" text="NIN, phone, email, matric number, and device fingerprint are checked against previous applications." />
+                <SecurityCard icon={Camera} title="Face match" text="Admin compares your profile picture with your school ID and government ID image." />
+                <SecurityCard icon={Smartphone} title="Phone-NIN link" text="Phone ownership is reviewed against NIN-linked identity evidence before acceptance." />
               </div>
 
-              <label className="flex items-start gap-3 p-4 rounded-xl bg-muted border border-border cursor-pointer hover:border-primary/40 transition-colors">
-                <input
-                  type="checkbox"
-                  checked={data.confirm}
-                  onChange={(e) => update("confirm", e.target.checked)}
-                  className="mt-0.5 h-5 w-5 rounded accent-primary"
-                />
-                <span className="text-sm">
-                  I confirm that I am a registered SIWES student and the information above is accurate. I understand
-                  that false information will result in disqualification.
-                </span>
-              </label>
+              <div className="space-y-3">
+                <Consent checked={data.phoneLinkedToNin} onChange={(v) => update("phoneLinkedToNin", v)} text="I confirm this phone number belongs to me and can be checked against my identity/NIN evidence." />
+                <Consent checked={data.duplicateConsent} onChange={(v) => update("duplicateConsent", v)} text="I understand duplicate applications, reused NIN, reused documents, or fake identity data can lead to permanent disqualification." />
+                <Consent checked={data.truthConsent} onChange={(v) => update("truthConsent", v)} text="I confirm all uploaded documents are real, readable, and belong to me." />
+              </div>
+
+              <div className="rounded-xl border border-primary/30 bg-primary/10 p-4 flex gap-3 text-sm text-muted-foreground">
+                <Lock className="h-5 w-5 text-primary shrink-0 mt-0.5" />
+                <p>
+                  After the game, your score is attached to this verification file. Auto-pass means the score threshold was met, not automatic admission. An admin must manually accept you.
+                </p>
+              </div>
             </div>
           )}
 
-          {/* Nav */}
           <div className="flex items-center justify-between mt-8 pt-6 border-t border-border">
-            <Button
-              variant="ghost"
-              onClick={prev}
-              disabled={step === 1 || submitting}
-              className="gap-2"
-            >
-              <ArrowLeft className="h-4 w-4" />
-              Back
+            <Button variant="ghost" onClick={prev} disabled={step === 1 || submitting} className="gap-2">
+              <ArrowLeft className="h-4 w-4" /> Back
             </Button>
-            {step < 4 ? (
-              <Button variant="hero" onClick={next} className="gap-2">
+            {step < 3 ? (
+              <Button variant="hero" onClick={next} disabled={!canContinue} className="gap-2">
                 Continue <ArrowRight className="h-4 w-4" />
               </Button>
             ) : (
-              <Button variant="hero" size="lg" onClick={submit} disabled={!data.confirm || submitting} className="gap-2">
-                {submitting ? <><Loader2 className="h-4 w-4 animate-spin" /> Submitting…</> : <>Submit application <ArrowRight className="h-4 w-4" /></>}
+              <Button variant="hero" size="lg" onClick={submit} disabled={!canContinue || submitting} className="gap-2">
+                {submitting ? <><Loader2 className="h-4 w-4 animate-spin" /> Opening game...</> : <>Open qualifying game <ArrowRight className="h-4 w-4" /></>}
               </Button>
             )}
           </div>
-        </div>
-      </div>
+        </section>
+      </main>
     </div>
   );
 };
 
 const Header = ({ title, subtitle }: { title: string; subtitle: string }) => (
-  <div className="mb-2">
-    <h1 className="font-display text-2xl lg:text-3xl font-bold">{title}</h1>
+  <div>
+    <h2 className="font-display text-2xl lg:text-3xl font-bold">{title}</h2>
     <p className="text-muted-foreground text-sm mt-1.5">{subtitle}</p>
   </div>
 );
@@ -249,73 +219,49 @@ const Field = ({ label, children }: { label: string; children: React.ReactNode }
   </div>
 );
 
-const UploadZone = ({
-  file,
-  onChange,
-  hint,
-  icon,
-}: {
-  file: File | null;
-  onChange: (f: File) => void;
-  hint: string;
-  icon: React.ReactNode;
-}) => (
-  <label className="flex flex-col items-center justify-center gap-2 h-36 rounded-xl border-2 border-dashed border-border bg-muted/40 cursor-pointer hover:border-primary/60 hover:bg-muted/70 transition-all">
-    <input
-      type="file"
-      accept="image/*"
-      className="hidden"
-      onChange={(e) => e.target.files?.[0] && onChange(e.target.files[0])}
-    />
+const UploadZone = ({ title, hint, file, onChange, icon: Icon }: { title: string; hint: string; file: File | null; onChange: (f: File) => void; icon: any }) => (
+  <label className="min-h-40 rounded-xl border-2 border-dashed border-border bg-muted/40 cursor-pointer hover:border-primary/60 hover:bg-muted/70 transition-all p-4 flex flex-col items-center justify-center gap-2 text-center">
+    <input type="file" accept="image/*" className="hidden" onChange={(e) => e.target.files?.[0] && onChange(e.target.files[0])} />
     {file ? (
       <>
         <Check className="h-6 w-6 text-accent" />
-        <p className="text-sm font-medium">{file.name}</p>
+        <p className="text-sm font-medium break-all">{file.name}</p>
         <p className="text-xs text-muted-foreground">Click to replace</p>
       </>
     ) : (
       <>
-        <div className="h-10 w-10 rounded-full bg-primary/10 grid place-items-center text-primary">{icon}</div>
-        <p className="text-sm font-medium">Click to upload</p>
+        <div className="h-10 w-10 rounded-full bg-primary/10 grid place-items-center text-primary">
+          <Icon className="h-5 w-5" />
+        </div>
+        <p className="text-sm font-medium">{title}</p>
         <p className="text-xs text-muted-foreground">{hint}</p>
+        <span className="inline-flex items-center gap-1 text-[11px] text-primary"><Upload className="h-3 w-3" /> Upload image</span>
       </>
     )}
   </label>
 );
 
-const SelfieCapture = ({ taken, onCapture }: { taken: boolean; onCapture: () => void }) => (
-  <div className="rounded-xl border border-border bg-muted/40 p-5 flex flex-col items-center gap-4">
-    <div className="relative h-40 w-40 rounded-full grid place-items-center bg-background border-2 border-dashed border-border overflow-hidden">
-      {taken ? (
-        <div className="h-full w-full bg-gradient-primary grid place-items-center">
-          <Check className="h-12 w-12 text-primary-foreground" />
-        </div>
-      ) : (
-        <>
-          <Camera className="h-10 w-10 text-muted-foreground" />
-          <div className="absolute inset-0 rounded-full border-2 border-primary/0 animate-pulse-glow" />
-        </>
-      )}
-    </div>
-    <Button type="button" variant={taken ? "soft" : "violet"} onClick={onCapture} className="gap-2">
-      <Camera className="h-4 w-4" />
-      {taken ? "Retake selfie" : "Capture selfie"}
-    </Button>
-    <p className="text-xs text-muted-foreground text-center max-w-sm">
-      Good lighting, plain background, look straight at the camera. We use this to match your school ID.
-    </p>
+const SecurityCard = ({ icon: Icon, title, text }: { icon: any; title: string; text: string }) => (
+  <div className="rounded-xl bg-muted/40 border border-border p-4">
+    <Icon className="h-5 w-5 text-primary mb-3" />
+    <h3 className="font-display font-semibold mb-1">{title}</h3>
+    <p className="text-xs text-muted-foreground">{text}</p>
   </div>
 );
 
-const ReviewBlock = ({ title, rows }: { title: string; rows: [string, string][] }) => (
-  <div className="rounded-xl border border-border bg-muted/40 p-4">
-    <p className="text-xs font-mono uppercase tracking-widest text-secondary mb-3">{title}</p>
-    <div className="space-y-2">
-      {rows.map(([k, v]) => (
-        <div key={k} className="flex justify-between gap-4 text-sm">
-          <span className="text-muted-foreground">{k}</span>
-          <span className="font-medium text-right truncate">{v}</span>
-        </div>
+const Consent = ({ checked, onChange, text }: { checked: boolean; onChange: (v: boolean) => void; text: string }) => (
+  <label className="flex items-start gap-3 p-4 rounded-xl bg-muted/40 border border-border cursor-pointer hover:border-primary/40 transition-colors">
+    <input type="checkbox" checked={checked} onChange={(e) => onChange(e.target.checked)} className="mt-0.5 h-5 w-5 rounded accent-primary" />
+    <span className="text-sm">{text}</span>
+  </label>
+);
+
+const TrustPanel = ({ items }: { items: string[] }) => (
+  <div className="rounded-xl border border-accent/30 bg-accent/5 p-4">
+    <p className="text-sm font-semibold text-accent mb-3">Security checks started</p>
+    <div className="grid md:grid-cols-3 gap-2">
+      {items.map((item) => (
+        <p key={item} className="text-xs text-muted-foreground rounded-lg bg-background/40 border border-border p-2">{item}</p>
       ))}
     </div>
   </div>

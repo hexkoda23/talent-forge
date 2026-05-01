@@ -5,17 +5,21 @@ import { Card } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
 
 const apps = [
-  { id: "A-9301", name: "Adaeze Okafor", phone: "+234 801 444 1902", school: "UNILAG", matric: "CSC/20/1032", nin: "8429-3311-9021", score: 1000, pass: "pass", auto: true, status: "pending", issue: "Clean profile" },
-  { id: "A-9298", name: "Chinedu Eze", phone: "+234 816 222 7788", school: "UNN", matric: "ENG/21/0441", nin: "3381-9902-5510", score: 640, pass: "review", auto: false, status: "flagged", issue: "Student ID appears blurry" },
-  { id: "A-9281", name: "Hauwa Ibrahim", phone: "+234 809 118 3344", school: "ABU Zaria", matric: "IT/19/7812", nin: "7710-2245-1139", score: 710, pass: "review", auto: false, status: "conditional", issue: "Phone identity mismatch" },
+  { id: "A-9301", name: "Adaeze Okafor", phone: "+234 801 444 1902", email: "adaeze@unilag.edu.ng", school: "UNILAG", matric: "CSC/20/1032", level: "400L", nin: "84293311902", score: 1000, pass: "pass", auto: true, status: "pending", issue: "Game-qualified. Awaiting manual identity approval." },
+  { id: "A-9298", name: "Chinedu Eze", phone: "+234 816 222 7788", email: "chinedu@unn.edu.ng", school: "UNN", matric: "ENG/21/0441", level: "300L", nin: "33819902551", score: 640, pass: "review", auto: false, status: "flagged", issue: "Student ID appears blurry" },
+  { id: "A-9281", name: "Hauwa Ibrahim", phone: "+234 809 118 3344", email: "hauwa@abu.edu.ng", school: "ABU Zaria", matric: "IT/19/7812", level: "400L", nin: "77102245113", score: 710, pass: "review", auto: false, status: "conditional", issue: "Phone identity mismatch" },
 ];
 
 const initialChecks = [
   { key: "id", label: "Student ID Card is clear and readable", checked: false, comment: "Upload is readable enough for school logo, but photo edge is soft.", flag: false },
   { key: "nin", label: "NIN is valid", checked: false, comment: "", flag: false },
+  { key: "ninDigits", label: "NIN has exactly 11 digits", checked: false, comment: "", flag: false },
   { key: "matric", label: "Matric Number is correct", checked: false, comment: "", flag: false },
   { key: "school", label: "School Name is valid", checked: false, comment: "", flag: false },
-  { key: "phone", label: "Phone Number matches identity", checked: false, comment: "", flag: false },
+  { key: "phone", label: "Phone Number is linked to NIN identity", checked: false, comment: "", flag: false },
+  { key: "face", label: "Profile picture matches School ID and Government ID", checked: false, comment: "", flag: false },
+  { key: "duplicate", label: "No duplicate NIN, phone, email, matric, or document hash", checked: false, comment: "", flag: false },
+  { key: "gov", label: "Government ID or NIN image is clear and name-matched", checked: false, comment: "", flag: false },
   { key: "consistency", label: "Profile data consistency check", checked: false, comment: "", flag: false },
 ];
 
@@ -91,10 +95,17 @@ export default function AdminApplications() {
             <div className="grid md:grid-cols-2 xl:grid-cols-3 gap-3 text-sm">
               <Info label="Full name" value={active.name} />
               <Info label="Phone number" value={active.phone} />
+              <Info label="Email address" value={active.email} />
               <Info label="School name" value={active.school} />
               <Info label="Matric number" value={active.matric} />
+              <Info label="Level" value={active.level} />
               <Info label="NIN" value={active.nin} />
               <Info label="Student ID card" value="student-id-front.jpg" />
+              <Info label="Profile picture" value="profile-photo.jpg" />
+              <Info label="NIN / Government ID" value="nin-slip-or-gov-id.jpg" />
+            </div>
+            <div className="mt-4 rounded-xl border border-warning/30 bg-warning/5 p-3 text-sm text-muted-foreground">
+              Auto-pass only means this applicant passed the game threshold. Learning access stays locked until an admin accepts this verification file.
             </div>
           </Card>
 
@@ -122,7 +133,7 @@ export default function AdminApplications() {
             <h2 className="font-display font-semibold text-lg mb-4">Decision actions and correction flow</h2>
             <div className="grid lg:grid-cols-[1fr,1.2fr] gap-4">
               <div className="space-y-2">
-                {["Student ID Card", "NIN", "Matric Number", "School Name", "Phone Number", "Profile consistency"].map((field) => (
+                {["Student ID Card", "Profile picture", "NIN", "Government ID image", "Matric Number", "School Name", "Phone Number", "Face match", "Duplicate check", "Profile consistency"].map((field) => (
                   <label key={field} className="flex items-center gap-2 rounded-lg bg-muted/40 border border-border p-2 text-sm">
                     <input
                       type="checkbox"
@@ -137,7 +148,7 @@ export default function AdminApplications() {
               <div className="rounded-xl border border-warning/30 bg-warning/5 p-4">
                 <p className="text-sm font-medium mb-2">Correction request preview</p>
                 <p className="text-sm text-muted-foreground">
-                  Your ID card is blurry. Please upload a clearer version to complete verification. Direct edit link: /status/correct/{active.id}
+                  Your ID card is blurry and your phone-NIN link needs confirmation. Please upload a clearer school ID and a valid NIN/government ID image. Direct edit link: /status/correct/{active.id}
                 </p>
                 <div className="flex flex-wrap gap-2 mt-4">
                   <Button variant="hero" size="sm"><Check className="h-4 w-4" /> Accept user</Button>

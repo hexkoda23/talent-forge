@@ -19,9 +19,9 @@ const Status = () => {
     review: {
       Icon: Clock,
       tone: "warning",
-      title: "Application under review",
-      sub: "Hang tight. A reviewer will look at your file within 48 hours.",
-      body: "We'll email you as soon as a decision is made. You don't need to do anything else right now.",
+      title: "Pending admin verification",
+      sub: "Your game score and identity file are now in the admin review queue.",
+      body: "Even if you passed the game threshold, a TalentOS admin must verify your photo, school ID, NIN, phone linkage, and duplicate checks before you enter the platform.",
       cta: { label: "Back to home", to: "/" },
     },
     rejected: {

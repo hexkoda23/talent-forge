@@ -1,19 +1,17 @@
 import { useEffect, useState } from "react";
-import { Link, useLocation, useNavigate } from "react-router-dom";
-import { CheckCircle2, Loader2, Trophy, ArrowRight, Brain, Puzzle, Timer } from "lucide-react";
+import { useLocation, useNavigate } from "react-router-dom";
+import { ArrowRight, Brain, CheckCircle2, Loader2, Puzzle, Timer, Trophy } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Logo } from "@/components/Logo";
 
 const Result = () => {
   const location = useLocation();
-  const navigate = useNavigate();
   const total: number = location.state?.total ?? 78;
   const breakdown = location.state?.breakdown ?? { memory: 70, logic: 80, speed: 84 };
-
   const [processing, setProcessing] = useState(false);
   const qualified = total >= 70;
 
-  if (processing) return <ProcessingView qualified={qualified} />;
+  if (processing) return <ProcessingView />;
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -27,7 +25,7 @@ const Result = () => {
           </div>
           <p className="text-sm font-mono uppercase tracking-widest text-secondary mb-2">// assessment complete</p>
           <h1 className="font-display text-4xl lg:text-5xl font-bold mb-3">Nice work.</h1>
-          <p className="text-muted-foreground">Here's how you did across the three challenges.</p>
+          <p className="text-muted-foreground">Here is how you did across the three challenges.</p>
         </div>
 
         <div className="glass-panel rounded-2xl p-8 mt-10 text-center">
@@ -41,22 +39,20 @@ const Result = () => {
             <Score icon={Timer} label="Speed" value={breakdown.speed} />
           </div>
 
-          <div className={`mt-8 inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-semibold ${
-            qualified ? "bg-accent/15 text-accent border border-accent/30" : "bg-warning/15 text-warning border border-warning/30"
-          }`}>
+          <div className={`mt-8 inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-semibold ${qualified ? "bg-accent/15 text-accent border border-accent/30" : "bg-warning/15 text-warning border border-warning/30"}`}>
             <Trophy className="h-4 w-4" />
-            {qualified ? "Auto Qualified" : "Under Review"}
+            {qualified ? "Game Qualified" : "Under Review"}
           </div>
-          <p className="text-xs text-muted-foreground mt-3 max-w-xs mx-auto">
+          <p className="text-xs text-muted-foreground mt-3 max-w-sm mx-auto">
             {qualified
-              ? "You scored above our threshold — your application moves to final processing."
-              : "Your application will be reviewed by the Talent Nation team within 48 hours."}
+              ? "You scored above the game threshold. Admin must still verify your identity before you can enter the platform."
+              : "Your application and score will be reviewed by the Talent Nation team within 48 hours."}
           </p>
         </div>
 
         <div className="mt-8 text-center">
           <Button variant="hero" size="xl" className="gap-2" onClick={() => setProcessing(true)}>
-            Continue <ArrowRight className="h-5 w-5" />
+            Submit for admin verification <ArrowRight className="h-5 w-5" />
           </Button>
         </div>
       </div>
@@ -72,14 +68,14 @@ const Score = ({ icon: Icon, label, value }: { icon: any; label: string; value: 
   </div>
 );
 
-const ProcessingView = ({ qualified }: { qualified: boolean }) => {
+const ProcessingView = () => {
   const navigate = useNavigate();
   const [stage, setStage] = useState(0);
   const stages = [
-    "Analyzing your responses…",
-    "Cross-checking school records…",
-    "Verifying identity documents…",
-    "Matching to a cohort track…",
+    "Analyzing your responses...",
+    "Cross-checking school records...",
+    "Verifying identity documents...",
+    "Preparing your file for manual admin approval...",
   ];
 
   useEffect(() => {
@@ -87,7 +83,7 @@ const ProcessingView = ({ qualified }: { qualified: boolean }) => {
       const t = setTimeout(() => setStage((s) => s + 1), 1100);
       return () => clearTimeout(t);
     }
-    const t = setTimeout(() => navigate(qualified ? "/status?state=accepted" : "/status?state=review"), 1400);
+    const t = setTimeout(() => navigate("/status?state=review"), 1400);
     return () => clearTimeout(t);
   }, [stage]);
 
@@ -102,8 +98,8 @@ const ProcessingView = ({ qualified }: { qualified: boolean }) => {
             <Loader2 className="h-7 w-7 text-primary animate-spin" />
           </div>
         </div>
-        <h1 className="font-display text-2xl lg:text-3xl font-bold mb-2">Reviewing your application</h1>
-        <p className="text-muted-foreground text-sm mb-6">Our system is doing its thing. Hang tight.</p>
+        <h1 className="font-display text-2xl lg:text-3xl font-bold mb-2">Sending to admin review</h1>
+        <p className="text-muted-foreground text-sm mb-6">Your file is being prepared for manual verification.</p>
         <div className="space-y-2 text-left max-w-sm mx-auto">
           {stages.map((s, i) => (
             <div key={s} className={`flex items-center gap-3 text-sm transition-opacity ${i > stage ? "opacity-30" : "opacity-100"}`}>
