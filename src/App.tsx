@@ -14,6 +14,7 @@ import Onboarding from "./pages/Onboarding.tsx";
 import { DashboardLayout } from "./components/DashboardLayout.tsx";
 import DashboardHome from "./pages/dashboard/Home.tsx";
 import Quests from "./pages/dashboard/Quests.tsx";
+import Learn from "./pages/dashboard/Learn.tsx";
 import Workspace from "./pages/dashboard/Workspace.tsx";
 import Logbook from "./pages/dashboard/Logbook.tsx";
 import Profile from "./pages/dashboard/Profile.tsx";
@@ -49,6 +50,7 @@ const App = () => (
           <Route path="/onboarding" element={<Onboarding />} />
           <Route path="/dashboard" element={<DashboardLayout />}>
             <Route index element={<DashboardHome />} />
+            <Route path="learn" element={<Learn />} />
             <Route path="quests" element={<Quests />} />
             <Route path="checkpoints" element={<Checkpoints />} />
             <Route path="leaderboard" element={<Leaderboard />} />
