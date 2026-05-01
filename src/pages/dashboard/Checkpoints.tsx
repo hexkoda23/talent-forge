@@ -21,9 +21,9 @@ const Checkpoints = () => {
     <div className="space-y-8 animate-fade-up">
       <div className="flex flex-wrap items-end justify-between gap-4">
         <div>
-          <p className="text-xs font-mono uppercase tracking-widest text-secondary mb-2">// the path</p>
-          <h1 className="font-display text-3xl lg:text-4xl font-bold">Checkpoints Journey</h1>
-          <p className="text-muted-foreground mt-2">Eight milestones between you and full AI Engineer status.</p>
+          <p className="text-xs font-mono uppercase tracking-widest text-secondary mb-2">// weekly exams</p>
+          <h1 className="font-display text-3xl lg:text-4xl font-bold">Checkpoint Exams</h1>
+          <p className="text-muted-foreground mt-2">One timed exam per week. Pass it to unlock the next stage of the journey.</p>
         </div>
         <div className="glass-panel rounded-xl px-4 py-3 flex items-center gap-3">
           <Trophy className="h-5 w-5 text-warning" />
