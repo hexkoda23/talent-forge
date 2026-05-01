@@ -20,12 +20,12 @@ import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
 const nav = [
-  { to: "/admin", label: "Overview", icon: LayoutDashboard },
-  { to: "/admin/applications", label: "Applications", icon: ClipboardCheck },
-  { to: "/admin/students", label: "Students", icon: Users },
-  { to: "/admin/code", label: "Code Monitor", icon: Code2 },
-  { to: "/admin/moderation", label: "Moderation", icon: ShieldAlert },
-  { to: "/admin/audit", label: "Audit Log", icon: ScrollText },
+  { to: "/admin", label: "Command Center", icon: LayoutDashboard },
+  { to: "/admin/applications", label: "Entry Gate", icon: ClipboardCheck },
+  { to: "/admin/students", label: "User Intel", icon: Users },
+  { to: "/admin/code", label: "Activity Monitor", icon: Code2 },
+  { to: "/admin/moderation", label: "Enforcement", icon: ShieldAlert },
+  { to: "/admin/audit", label: "Audit Trail", icon: ScrollText },
   { to: "/admin/roles", label: "Roles", icon: UserCog },
 ];
 

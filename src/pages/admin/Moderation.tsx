@@ -1,62 +1,58 @@
-import { Card } from "@/components/ui/card";
+import { AlertTriangle, Ban, ClipboardCheck, Eye, Flag, Gavel, Mic, MonitorX, Send, ShieldAlert, Timer, Users, Video } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { ShieldAlert, Ban, Flag, Eye, AlertTriangle, Check, X } from "lucide-react";
+import { Card } from "@/components/ui/card";
 
-const flags = [
-  { id: "F-238", user: "@kayode_w", reason: "Selfie mismatch with school ID", severity: "high", time: "12m ago" },
-  { id: "F-237", user: "@ada_dev", reason: "Multiple accounts from same device", severity: "high", time: "1h ago" },
-  { id: "F-236", user: "@chuks101", reason: "Plagiarized commits detected", severity: "medium", time: "3h ago" },
-  { id: "F-235", user: "@ifey_t", reason: "Abusive language in community chat", severity: "medium", time: "5h ago" },
-  { id: "F-234", user: "@bola_x", reason: "Suspicious assessment pattern", severity: "low", time: "1d ago" },
+const offenses = [
+  { user: "Kayode Williams", reason: "Tab-switch burst during checkpoint exam", level: "2nd offense", action: "Suspend 72h" },
+  { user: "Ifeanyi Obi", reason: "Fake peer audit scores with no repo evidence", level: "1st offense", action: "Warning" },
+  { user: "Bola Martins", reason: "Raid non-participation confirmed by interview", level: "3rd offense", action: "Expulsion review" },
 ];
 
-const blacklist = [
-  { user: "@fake_dev_99", reason: "Identity fraud", date: "Apr 24, 2026" },
-  { user: "@scriptkid", reason: "Repeated cheating", date: "Apr 19, 2026" },
-  { user: "@spam_acc", reason: "Spam in community", date: "Apr 12, 2026" },
+const proctorFlags = [
+  { icon: Mic, text: "Suspicious noise", count: 18 },
+  { icon: Users, text: "Multiple faces detected", count: 7 },
+  { icon: Eye, text: "Looking away frequently", count: 12 },
+  { icon: MonitorX, text: "Tab-switch detection", count: 24 },
 ];
+
+const peerFlags = ["Users giving everyone 95%+", "Friend-circle reciprocal scoring", "Random scores without comments"];
+const raidReviews = ["Team #07 Q&A pending", "Team #11 contribution dispute", "Team #04 failed demo validation"];
 
 export default function AdminModeration() {
   return (
     <div className="space-y-6">
-      <div>
-        <h1 className="text-3xl font-display font-bold flex items-center gap-3">
-          <ShieldAlert className="h-7 w-7 text-destructive" /> Moderation
-        </h1>
-        <p className="text-muted-foreground">Override system decisions, flag, and blacklist accounts.</p>
+      <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-3">
+        <div>
+          <p className="text-xs font-mono uppercase tracking-widest text-destructive mb-2">// discipline and integrity</p>
+          <h1 className="text-3xl font-display font-bold flex items-center gap-3"><ShieldAlert className="h-7 w-7 text-destructive" /> Enforcement Center</h1>
+          <p className="text-muted-foreground max-w-2xl">Issue warnings, suspend, expel, review AI proctoring, audit peer scoring, and validate raid contribution.</p>
+        </div>
+        <Button variant="hero" size="sm"><Send className="h-4 w-4" /> Send system message</Button>
       </div>
 
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-        <Card className="glass-panel p-5"><Flag className="h-5 w-5 text-warning mb-3" /><div className="text-2xl font-display font-bold">37</div><div className="text-xs text-muted-foreground">Open flags</div></Card>
-        <Card className="glass-panel p-5"><AlertTriangle className="h-5 w-5 text-destructive mb-3" /><div className="text-2xl font-display font-bold">12</div><div className="text-xs text-muted-foreground">Critical</div></Card>
-        <Card className="glass-panel p-5"><Ban className="h-5 w-5 text-destructive mb-3" /><div className="text-2xl font-display font-bold">84</div><div className="text-xs text-muted-foreground">Blacklisted</div></Card>
-        <Card className="glass-panel p-5"><Check className="h-5 w-5 text-accent mb-3" /><div className="text-2xl font-display font-bold">421</div><div className="text-xs text-muted-foreground">Resolved (30d)</div></Card>
+        <Metric icon={Flag} label="Open flags" value="37" tone="text-warning" />
+        <Metric icon={Timer} label="Suspensions" value="18" tone="text-warning" />
+        <Metric icon={Ban} label="Banned users" value="84" tone="text-destructive" />
+        <Metric icon={ClipboardCheck} label="Resolved 30d" value="421" tone="text-accent" />
       </div>
 
-      <div className="grid lg:grid-cols-3 gap-6">
-        <Card className="glass-panel p-5 lg:col-span-2">
-          <h2 className="font-display font-semibold text-lg mb-4">Active flags</h2>
-          <div className="space-y-2">
-            {flags.map((f) => (
-              <div key={f.id} className="p-3 rounded-lg bg-muted/40 border border-border">
-                <div className="flex items-start justify-between gap-3">
-                  <div className="min-w-0">
-                    <div className="flex items-center gap-2 mb-1">
-                      <span className="font-mono text-xs text-muted-foreground">{f.id}</span>
-                      <span className="font-medium text-sm">{f.user}</span>
-                      <span className={`text-[10px] font-mono px-2 py-0.5 rounded ${
-                        f.severity === "high" ? "bg-destructive/15 text-destructive border border-destructive/30" :
-                        f.severity === "medium" ? "bg-warning/15 text-warning border border-warning/30" :
-                        "bg-muted text-muted-foreground border border-border"
-                      }`}>{f.severity}</span>
-                    </div>
-                    <p className="text-sm text-muted-foreground">{f.reason}</p>
-                    <p className="text-[11px] text-muted-foreground mt-1">{f.time}</p>
+      <div className="grid xl:grid-cols-[1.2fr,0.8fr] gap-6">
+        <Card className="glass-panel p-5">
+          <h2 className="font-display font-semibold text-lg mb-4 flex items-center gap-2"><Gavel className="h-5 w-5 text-warning" /> Escalation queue</h2>
+          <div className="space-y-3">
+            {offenses.map((o) => (
+              <div key={o.user} className="rounded-xl bg-muted/30 border border-border p-4">
+                <div className="flex flex-wrap items-start justify-between gap-3">
+                  <div>
+                    <p className="font-semibold">{o.user}</p>
+                    <p className="text-sm text-muted-foreground">{o.reason}</p>
+                    <span className="inline-block mt-2 text-[10px] font-mono px-2 py-1 rounded border border-warning/30 bg-warning/15 text-warning">{o.level}</span>
                   </div>
-                  <div className="flex gap-1 shrink-0">
-                    <Button size="icon" variant="ghost" className="h-8 w-8"><Eye className="h-4 w-4" /></Button>
-                    <Button size="icon" variant="ghost" className="h-8 w-8 text-accent"><Check className="h-4 w-4" /></Button>
-                    <Button size="icon" variant="ghost" className="h-8 w-8 text-destructive"><Ban className="h-4 w-4" /></Button>
+                  <div className="flex flex-wrap gap-2">
+                    <Button variant="soft" size="sm"><AlertTriangle className="h-4 w-4" /> Warning</Button>
+                    <Button variant="soft" size="sm"><Timer className="h-4 w-4" /> Suspend</Button>
+                    <Button variant="destructive" size="sm"><Ban className="h-4 w-4" /> Ban</Button>
                   </div>
                 </div>
               </div>
@@ -65,21 +61,57 @@ export default function AdminModeration() {
         </Card>
 
         <Card className="glass-panel p-5">
-          <h2 className="font-display font-semibold text-lg mb-4">Blacklist</h2>
-          <div className="space-y-3">
-            {blacklist.map((b) => (
-              <div key={b.user} className="flex items-center justify-between p-2 rounded-lg bg-muted/40 border border-border">
-                <div className="min-w-0">
-                  <div className="font-medium text-sm">{b.user}</div>
-                  <div className="text-[11px] text-muted-foreground">{b.reason} · {b.date}</div>
-                </div>
-                <Button size="icon" variant="ghost" className="h-8 w-8"><X className="h-4 w-4" /></Button>
+          <h2 className="font-display font-semibold text-lg mb-4 flex items-center gap-2"><Video className="h-5 w-5 text-destructive" /> AI proctoring review</h2>
+          <div className="space-y-2">
+            {proctorFlags.map((f) => (
+              <div key={f.text} className="rounded-lg bg-muted/40 border border-border p-3 flex items-center gap-3">
+                <f.icon className="h-4 w-4 text-warning" />
+                <span className="text-sm flex-1">{f.text}</span>
+                <span className="font-mono text-warning">{f.count}</span>
               </div>
             ))}
-            <Button variant="soft" className="w-full" size="sm">+ Add to blacklist</Button>
+          </div>
+        </Card>
+      </div>
+
+      <div className="grid lg:grid-cols-2 gap-6">
+        <Card className="glass-panel p-5">
+          <h2 className="font-display font-semibold text-lg mb-4">Quest and peer audit oversight</h2>
+          <div className="space-y-2">
+            {peerFlags.map((flag) => (
+              <div key={flag} className="rounded-lg bg-muted/40 border border-border p-3 flex items-center justify-between gap-3">
+                <span className="text-sm">{flag}</span>
+                <Button variant="soft" size="sm">Override / flag</Button>
+              </div>
+            ))}
+          </div>
+        </Card>
+
+        <Card className="glass-panel p-5">
+          <h2 className="font-display font-semibold text-lg mb-4">Raid audit validation</h2>
+          <div className="space-y-2">
+            {raidReviews.map((review) => (
+              <div key={review} className="rounded-lg bg-muted/40 border border-border p-3">
+                <div className="flex items-center justify-between gap-3">
+                  <span className="text-sm">{review}</span>
+                  <div className="flex gap-2">
+                    <Button variant="soft" size="sm">Interview</Button>
+                    <Button variant="hero" size="sm">Pass / fail</Button>
+                  </div>
+                </div>
+              </div>
+            ))}
           </div>
         </Card>
       </div>
     </div>
   );
 }
+
+const Metric = ({ icon: Icon, label, value, tone }: { icon: any; label: string; value: string; tone: string }) => (
+  <Card className="glass-panel p-5">
+    <Icon className={`h-5 w-5 ${tone} mb-3`} />
+    <div className="text-2xl font-display font-bold">{value}</div>
+    <div className="text-xs text-muted-foreground">{label}</div>
+  </Card>
+);

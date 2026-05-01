@@ -3,6 +3,7 @@ import { NavLink, Outlet, useLocation } from "react-router-dom";
 import {
   LayoutDashboard,
   Trophy,
+  ClipboardCheck,
   Code2,
   BookOpen,
   GraduationCap,
@@ -27,6 +28,8 @@ const nav = [
   { to: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
   { to: "/dashboard/learn", label: "Learn", icon: GraduationCap },
   { to: "/dashboard/quests", label: "Daily Quest", icon: Trophy },
+  { to: "/dashboard/raid", label: "Raid", icon: Flame },
+  { to: "/dashboard/audits", label: "Audits", icon: ClipboardCheck },
   { to: "/dashboard/checkpoints", label: "Checkpoints", icon: Map },
   { to: "/dashboard/leaderboard", label: "Leaderboard", icon: Crown },
   { to: "/dashboard/workspace", label: "Workspace", icon: Code2 },

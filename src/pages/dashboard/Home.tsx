@@ -303,7 +303,7 @@ const DashboardHome = () => {
             </div>
           </div>
 
-          <Link to="/dashboard/quests">
+          <Link to="/dashboard/raid">
             <Button variant="soft" size="sm" className="gap-2 w-full sm:w-auto">
               <Users className="h-4 w-4" /> Open raid
             </Button>

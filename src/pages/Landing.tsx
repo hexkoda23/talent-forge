@@ -21,9 +21,6 @@ const Landing = () => {
           <a href="#faq" className="hover:text-foreground transition-colors">FAQ</a>
         </nav>
         <div className="flex items-center gap-2">
-          <Link to="/login" className="hidden sm:inline-block">
-            <Button variant="ghost" size="sm">Sign in</Button>
-          </Link>
           <Link to="/assessment">
             <Button variant="hero" size="sm" className="gap-1.5">
               <Gamepad2 className="h-4 w-4" /> Play game

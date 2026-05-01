@@ -1,157 +1,172 @@
 import { useState } from "react";
-import { Card } from "@/components/ui/card";
+import { AlertTriangle, Check, ClipboardCheck, Eye, FileText, Filter, MessageSquareWarning, Send, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Check, X, Eye, Filter, Download, ChevronDown } from "lucide-react";
+import { Card } from "@/components/ui/card";
+import { Textarea } from "@/components/ui/textarea";
 
 const apps = [
-  { id: "A-9301", name: "Adaeze Okafor", school: "UNILAG", course: "Computer Science", level: "400L", score: 92, status: "auto-pass", flag: false },
-  { id: "A-9300", name: "Tunde Bakare", school: "OAU", course: "Software Eng.", level: "300L", score: 87, status: "auto-pass", flag: false },
-  { id: "A-9299", name: "Hauwa Ibrahim", school: "ABU Zaria", course: "Information Tech.", level: "400L", score: 71, status: "review", flag: false },
-  { id: "A-9298", name: "Chinedu Eze", school: "UNN", course: "Computer Eng.", level: "300L", score: 64, status: "review", flag: true },
-  { id: "A-9297", name: "Fatima Bello", school: "BUK", course: "Cybersecurity", level: "400L", score: 48, status: "review", flag: false },
-  { id: "A-9296", name: "Emeka Nwosu", school: "FUTA", course: "Software Eng.", level: "300L", score: 31, status: "auto-fail", flag: false },
-  { id: "A-9295", name: "Aisha Yusuf", school: "UI", course: "Data Science", level: "400L", score: 89, status: "auto-pass", flag: false },
-  { id: "A-9294", name: "Ifeoma Obi", school: "UNILAG", course: "Computer Science", level: "300L", score: 22, status: "auto-fail", flag: true },
+  { id: "A-9301", name: "Adaeze Okafor", phone: "+234 801 444 1902", school: "UNILAG", matric: "CSC/20/1032", nin: "8429-3311-9021", score: 1000, pass: "pass", auto: true, status: "pending", issue: "Clean profile" },
+  { id: "A-9298", name: "Chinedu Eze", phone: "+234 816 222 7788", school: "UNN", matric: "ENG/21/0441", nin: "3381-9902-5510", score: 640, pass: "review", auto: false, status: "flagged", issue: "Student ID appears blurry" },
+  { id: "A-9281", name: "Hauwa Ibrahim", phone: "+234 809 118 3344", school: "ABU Zaria", matric: "IT/19/7812", nin: "7710-2245-1139", score: 710, pass: "review", auto: false, status: "conditional", issue: "Phone identity mismatch" },
+];
+
+const initialChecks = [
+  { key: "id", label: "Student ID Card is clear and readable", checked: false, comment: "Upload is readable enough for school logo, but photo edge is soft.", flag: false },
+  { key: "nin", label: "NIN is valid", checked: false, comment: "", flag: false },
+  { key: "matric", label: "Matric Number is correct", checked: false, comment: "", flag: false },
+  { key: "school", label: "School Name is valid", checked: false, comment: "", flag: false },
+  { key: "phone", label: "Phone Number matches identity", checked: false, comment: "", flag: false },
+  { key: "consistency", label: "Profile data consistency check", checked: false, comment: "", flag: false },
 ];
 
 export default function AdminApplications() {
-  const [selected, setSelected] = useState<string[]>([]);
-  const [filter, setFilter] = useState<string>("all");
+  const [active, setActive] = useState(apps[1]);
+  const [checks, setChecks] = useState(initialChecks);
+  const [selectedFields, setSelectedFields] = useState<string[]>(["Student ID Card"]);
 
-  const toggle = (id: string) =>
-    setSelected((s) => (s.includes(id) ? s.filter((x) => x !== id) : [...s, id]));
+  const toggleCheck = (key: string) =>
+    setChecks((items) => items.map((item) => item.key === key ? { ...item, checked: !item.checked } : item));
 
-  const filtered = apps.filter((a) => filter === "all" || a.status === filter);
-  const allSelected = selected.length === filtered.length && filtered.length > 0;
+  const toggleFlag = (key: string) =>
+    setChecks((items) => items.map((item) => item.key === key ? { ...item, flag: !item.flag } : item));
+
+  const updateComment = (key: string, comment: string) =>
+    setChecks((items) => items.map((item) => item.key === key ? { ...item, comment } : item));
 
   return (
     <div className="space-y-6">
-      <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-3">
+      <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-3">
         <div>
-          <h1 className="text-3xl font-display font-bold">Applications</h1>
-          <p className="text-muted-foreground">Review, approve, or reject student applications.</p>
+          <p className="text-xs font-mono uppercase tracking-widest text-warning mb-2">// entry gate</p>
+          <h1 className="text-3xl font-display font-bold">Applicant Review and Verification</h1>
+          <p className="text-muted-foreground max-w-2xl">Review game qualification, submitted identity data, document evidence, and correction requests before anyone enters TalentOS.</p>
         </div>
         <div className="flex gap-2">
-          <Button variant="soft" size="sm"><Download className="h-4 w-4" /> Export</Button>
           <Button variant="soft" size="sm"><Filter className="h-4 w-4" /> Filters</Button>
+          <Button variant="soft" size="sm"><FileText className="h-4 w-4" /> Export queue</Button>
         </div>
       </div>
 
-      {/* Filter pills */}
-      <div className="flex flex-wrap gap-2">
-        {[
-          { k: "all", l: "All", c: apps.length },
-          { k: "auto-pass", l: "Auto-passed", c: apps.filter(a => a.status === "auto-pass").length },
-          { k: "review", l: "Needs review", c: apps.filter(a => a.status === "review").length },
-          { k: "auto-fail", l: "Auto-failed", c: apps.filter(a => a.status === "auto-fail").length },
-        ].map((f) => (
-          <button
-            key={f.k}
-            onClick={() => setFilter(f.k)}
-            className={`px-3 py-1.5 rounded-lg text-xs font-medium border transition-all ${
-              filter === f.k
-                ? "bg-primary text-primary-foreground border-primary"
-                : "bg-muted text-muted-foreground border-border hover:text-foreground"
-            }`}
-          >
-            {f.l} <span className="opacity-70 ml-1">({f.c})</span>
-          </button>
-        ))}
-      </div>
-
-      {/* Bulk actions */}
-      {selected.length > 0 && (
-        <Card className="glass-panel p-3 flex items-center justify-between animate-fade-in">
-          <span className="text-sm font-medium">{selected.length} selected</span>
-          <div className="flex gap-2">
-            <Button size="sm" variant="soft" className="text-accent"><Check className="h-4 w-4" /> Approve</Button>
-            <Button size="sm" variant="soft" className="text-destructive"><X className="h-4 w-4" /> Reject</Button>
-            <Button size="sm" variant="soft">Blacklist</Button>
+      <div className="grid xl:grid-cols-[0.9fr,1.5fr] gap-6">
+        <Card className="glass-panel overflow-hidden">
+          <div className="p-4 border-b border-border flex items-center justify-between">
+            <h2 className="font-display font-semibold">Live queue</h2>
+            <span className="text-xs font-mono text-muted-foreground">{apps.length} pending</span>
           </div>
+          {apps.map((a) => (
+            <button key={a.id} onClick={() => setActive(a)} className={`w-full text-left p-4 border-b border-border last:border-0 hover:bg-muted/30 transition-colors ${active.id === a.id ? "bg-primary/10" : ""}`}>
+              <div className="flex items-start justify-between gap-3">
+                <div>
+                  <div className="font-semibold flex items-center gap-2">
+                    {a.name}
+                    {a.status === "flagged" && <AlertTriangle className="h-4 w-4 text-destructive" />}
+                  </div>
+                  <div className="text-xs text-muted-foreground font-mono">{a.id} - {a.school}</div>
+                </div>
+                <div className="text-right">
+                  <div className="font-mono font-bold">{a.score}</div>
+                  <div className="text-[10px] text-muted-foreground">game score</div>
+                </div>
+              </div>
+              <div className="mt-3 flex flex-wrap gap-2">
+                <Status label={a.pass} tone={a.pass === "pass" ? "accent" : "warning"} />
+                {a.auto && <Status label="auto-pass" tone="primary" />}
+                <Status label={a.status} tone={a.status === "flagged" ? "destructive" : "muted" } />
+              </div>
+              <p className="text-xs text-muted-foreground mt-2">{a.issue}</p>
+            </button>
+          ))}
         </Card>
-      )}
 
-      <Card className="glass-panel overflow-hidden">
-        <div className="overflow-x-auto">
-          <table className="w-full text-sm">
-            <thead className="bg-muted/40 border-b border-border">
-              <tr className="text-left text-xs text-muted-foreground">
-                <th className="p-3 w-10">
-                  <input
-                    type="checkbox"
-                    checked={allSelected}
-                    onChange={() => setSelected(allSelected ? [] : filtered.map((a) => a.id))}
-                  />
-                </th>
-                <th className="p-3">Applicant</th>
-                <th className="p-3 hidden md:table-cell">School</th>
-                <th className="p-3 hidden lg:table-cell">Course</th>
-                <th className="p-3">Score</th>
-                <th className="p-3">Status</th>
-                <th className="p-3 text-right">Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              {filtered.map((a) => (
-                <tr key={a.id} className="border-b border-border last:border-0 hover:bg-muted/30 transition-colors">
-                  <td className="p-3">
-                    <input type="checkbox" checked={selected.includes(a.id)} onChange={() => toggle(a.id)} />
-                  </td>
-                  <td className="p-3">
-                    <div className="flex items-center gap-3">
-                      <div className="h-9 w-9 rounded-full bg-gradient-primary grid place-items-center text-xs font-semibold text-primary-foreground">
-                        {a.name.split(" ").map(n => n[0]).join("")}
-                      </div>
-                      <div>
-                        <div className="font-medium flex items-center gap-2">
-                          {a.name}
-                          {a.flag && <span className="text-[10px] px-1.5 py-0.5 rounded bg-destructive/15 text-destructive border border-destructive/30">FLAG</span>}
-                        </div>
-                        <div className="text-xs text-muted-foreground font-mono">{a.id} • {a.level}</div>
-                      </div>
-                    </div>
-                  </td>
-                  <td className="p-3 hidden md:table-cell text-muted-foreground">{a.school}</td>
-                  <td className="p-3 hidden lg:table-cell text-muted-foreground">{a.course}</td>
-                  <td className="p-3">
-                    <div className="flex items-center gap-2">
-                      <div className="font-mono font-semibold">{a.score}</div>
-                      <div className="h-1.5 w-16 rounded-full bg-muted overflow-hidden">
-                        <div
-                          className={`h-full ${a.score >= 70 ? "bg-accent" : a.score >= 50 ? "bg-warning" : "bg-destructive"}`}
-                          style={{ width: `${a.score}%` }}
-                        />
-                      </div>
-                    </div>
-                  </td>
-                  <td className="p-3">
-                    <span className={`text-[10px] font-mono px-2 py-1 rounded ${
-                      a.status === "auto-pass" ? "bg-accent/15 text-accent border border-accent/30" :
-                      a.status === "review" ? "bg-warning/15 text-warning border border-warning/30" :
-                      "bg-destructive/15 text-destructive border border-destructive/30"
-                    }`}>{a.status}</span>
-                  </td>
-                  <td className="p-3">
-                    <div className="flex justify-end gap-1">
-                      <Button size="icon" variant="ghost" className="h-8 w-8"><Eye className="h-4 w-4" /></Button>
-                      <Button size="icon" variant="ghost" className="h-8 w-8 text-accent"><Check className="h-4 w-4" /></Button>
-                      <Button size="icon" variant="ghost" className="h-8 w-8 text-destructive"><X className="h-4 w-4" /></Button>
-                    </div>
-                  </td>
-                </tr>
+        <div className="space-y-5">
+          <Card className="glass-panel p-5">
+            <div className="flex flex-wrap items-start justify-between gap-3 mb-4">
+              <div>
+                <h2 className="font-display text-xl font-semibold">{active.name}</h2>
+                <p className="text-xs text-muted-foreground font-mono">{active.id} - {active.pass.toUpperCase()} - {active.auto ? "AUTO-PASS THRESHOLD MET" : "HUMAN REVIEW REQUIRED"}</p>
+              </div>
+              <Button variant="soft" size="sm"><Eye className="h-4 w-4" /> View uploaded ID</Button>
+            </div>
+
+            <div className="grid md:grid-cols-2 xl:grid-cols-3 gap-3 text-sm">
+              <Info label="Full name" value={active.name} />
+              <Info label="Phone number" value={active.phone} />
+              <Info label="School name" value={active.school} />
+              <Info label="Matric number" value={active.matric} />
+              <Info label="NIN" value={active.nin} />
+              <Info label="Student ID card" value="student-id-front.jpg" />
+            </div>
+          </Card>
+
+          <Card className="glass-panel p-5">
+            <h2 className="font-display font-semibold text-lg mb-4 flex items-center gap-2"><ClipboardCheck className="h-5 w-5 text-accent" /> Document verification checklist</h2>
+            <div className="space-y-3">
+              {checks.map((item) => (
+                <div key={item.key} className="rounded-xl border border-border bg-muted/30 p-3">
+                  <div className="flex flex-wrap items-center gap-3">
+                    <label className="flex items-center gap-2 text-sm font-medium flex-1 min-w-64">
+                      <input type="checkbox" checked={item.checked} onChange={() => toggleCheck(item.key)} className="accent-primary" />
+                      {item.label}
+                    </label>
+                    <Button variant={item.flag ? "destructive" : "soft"} size="sm" onClick={() => toggleFlag(item.key)}>
+                      <MessageSquareWarning className="h-4 w-4" /> {item.flag ? "Flagged" : "Flag inconsistency"}
+                    </Button>
+                  </div>
+                  <Textarea value={item.comment} onChange={(e) => updateComment(item.key, e.target.value)} placeholder="Comment for this verification item..." className="mt-3 min-h-16" />
+                </div>
               ))}
-            </tbody>
-          </table>
+            </div>
+          </Card>
+
+          <Card className="glass-panel p-5">
+            <h2 className="font-display font-semibold text-lg mb-4">Decision actions and correction flow</h2>
+            <div className="grid lg:grid-cols-[1fr,1.2fr] gap-4">
+              <div className="space-y-2">
+                {["Student ID Card", "NIN", "Matric Number", "School Name", "Phone Number", "Profile consistency"].map((field) => (
+                  <label key={field} className="flex items-center gap-2 rounded-lg bg-muted/40 border border-border p-2 text-sm">
+                    <input
+                      type="checkbox"
+                      checked={selectedFields.includes(field)}
+                      onChange={() => setSelectedFields((fields) => fields.includes(field) ? fields.filter((f) => f !== field) : [...fields, field])}
+                      className="accent-primary"
+                    />
+                    {field}
+                  </label>
+                ))}
+              </div>
+              <div className="rounded-xl border border-warning/30 bg-warning/5 p-4">
+                <p className="text-sm font-medium mb-2">Correction request preview</p>
+                <p className="text-sm text-muted-foreground">
+                  Your ID card is blurry. Please upload a clearer version to complete verification. Direct edit link: /status/correct/{active.id}
+                </p>
+                <div className="flex flex-wrap gap-2 mt-4">
+                  <Button variant="hero" size="sm"><Check className="h-4 w-4" /> Accept user</Button>
+                  <Button variant="soft" size="sm"><Send className="h-4 w-4" /> Conditional acceptance</Button>
+                  <Button variant="destructive" size="sm"><X className="h-4 w-4" /> Reject user</Button>
+                </div>
+              </div>
+            </div>
+          </Card>
         </div>
-        <div className="flex items-center justify-between p-3 border-t border-border text-xs text-muted-foreground">
-          <span>Showing {filtered.length} of {apps.length} applications</span>
-          <div className="flex items-center gap-2">
-            <Button size="sm" variant="ghost">Prev</Button>
-            <span className="font-mono">1 / 24</span>
-            <Button size="sm" variant="ghost">Next</Button>
-          </div>
-        </div>
-      </Card>
+      </div>
     </div>
   );
 }
+
+const Info = ({ label, value }: { label: string; value: string }) => (
+  <div className="rounded-lg bg-muted/40 border border-border p-3">
+    <p className="text-[10px] uppercase font-mono text-muted-foreground mb-1">{label}</p>
+    <p className="font-medium break-words">{value}</p>
+  </div>
+);
+
+const Status = ({ label, tone }: { label: string; tone: "accent" | "warning" | "destructive" | "primary" | "muted" }) => {
+  const tones = {
+    accent: "bg-accent/15 text-accent border-accent/30",
+    warning: "bg-warning/15 text-warning border-warning/30",
+    destructive: "bg-destructive/15 text-destructive border-destructive/30",
+    primary: "bg-primary/15 text-primary border-primary/30",
+    muted: "bg-muted text-muted-foreground border-border",
+  };
+  return <span className={`text-[10px] font-mono px-2 py-1 rounded border ${tones[tone]}`}>{label}</span>;
+};
