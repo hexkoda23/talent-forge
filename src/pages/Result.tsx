@@ -9,9 +9,9 @@ const Result = () => {
   const total: number = location.state?.total ?? 78;
   const breakdown = location.state?.breakdown ?? { memory: 70, logic: 80, speed: 84 };
   const [processing, setProcessing] = useState(false);
-  const qualified = total >= 70;
+  const qualified = total >= 80;
 
-  if (processing) return <ProcessingView />;
+  if (processing) return <ProcessingView qualified={qualified} />;
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -41,18 +41,18 @@ const Result = () => {
 
           <div className={`mt-8 inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-semibold ${qualified ? "bg-accent/15 text-accent border border-accent/30" : "bg-warning/15 text-warning border border-warning/30"}`}>
             <Trophy className="h-4 w-4" />
-            {qualified ? "Game Qualified" : "Under Review"}
+            {qualified ? "Demo Access Unlocked" : "Under Review"}
           </div>
           <p className="text-xs text-muted-foreground mt-3 max-w-sm mx-auto">
             {qualified
-              ? "You scored above the game threshold. Admin must still verify your identity before you can enter the platform."
+              ? "You scored 80% or higher. For this demo, you can enter the user dashboard immediately."
               : "Your application and score will be reviewed by the Talent Nation team within 48 hours."}
           </p>
         </div>
 
         <div className="mt-8 text-center">
           <Button variant="hero" size="xl" className="gap-2" onClick={() => setProcessing(true)}>
-            Submit for admin verification <ArrowRight className="h-5 w-5" />
+            {qualified ? "Open user dashboard" : "Submit for admin verification"} <ArrowRight className="h-5 w-5" />
           </Button>
         </div>
       </div>
@@ -68,14 +68,14 @@ const Score = ({ icon: Icon, label, value }: { icon: any; label: string; value: 
   </div>
 );
 
-const ProcessingView = () => {
+const ProcessingView = ({ qualified }: { qualified: boolean }) => {
   const navigate = useNavigate();
   const [stage, setStage] = useState(0);
   const stages = [
     "Analyzing your responses...",
     "Cross-checking school records...",
     "Verifying identity documents...",
-    "Preparing your file for manual admin approval...",
+    qualified ? "Opening the demo user dashboard..." : "Preparing your file for manual admin approval...",
   ];
 
   useEffect(() => {
@@ -83,7 +83,7 @@ const ProcessingView = () => {
       const t = setTimeout(() => setStage((s) => s + 1), 1100);
       return () => clearTimeout(t);
     }
-    const t = setTimeout(() => navigate("/status?state=review"), 1400);
+    const t = setTimeout(() => navigate(qualified ? "/dashboard" : "/status?state=review"), 1400);
     return () => clearTimeout(t);
   }, [stage]);
 
