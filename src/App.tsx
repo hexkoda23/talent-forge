@@ -30,6 +30,7 @@ import AdminOverview from "./pages/admin/Overview.tsx";
 import AdminApplications from "./pages/admin/Applications.tsx";
 import AdminStudents from "./pages/admin/Students.tsx";
 import AdminCodeMonitor from "./pages/admin/CodeMonitor.tsx";
+import AdminCurriculumStudio from "./pages/admin/CurriculumStudio.tsx";
 import AdminModeration from "./pages/admin/Moderation.tsx";
 import AdminAuditLog from "./pages/admin/AuditLog.tsx";
 import AdminRoles from "./pages/admin/Roles.tsx";
@@ -69,6 +70,7 @@ const App = () => (
             <Route index element={<AdminOverview />} />
             <Route path="applications" element={<AdminApplications />} />
             <Route path="students" element={<AdminStudents />} />
+            <Route path="curriculum" element={<AdminCurriculumStudio />} />
             <Route path="code" element={<AdminCodeMonitor />} />
             <Route path="moderation" element={<AdminModeration />} />
             <Route path="audit" element={<AdminAuditLog />} />

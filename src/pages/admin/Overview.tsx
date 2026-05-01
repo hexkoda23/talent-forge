@@ -25,8 +25,9 @@ const stats = [
 
 const queues = [
   { title: "Entry gate", count: 61, path: "/admin/applications", items: ["ID card blurry: A-9298", "NIN validation mismatch: A-9281", "Auto-pass needs final document check: A-9301"] },
+  { title: "Curriculum studio", count: 14, path: "/admin/curriculum", items: ["3 module drafts awaiting publish", "6 student quests need assignment", "5 checkpoint gates scheduled"] },
   { title: "Proctoring review", count: 12, path: "/admin/moderation", items: ["Multiple faces detected: CP-041", "Background voice detected: CP-037", "Tab switch burst: CP-032"] },
-  { title: "Raid validation", count: 9, path: "/admin/moderation", items: ["Team #07 member Q&A pending", "Team #11 contribution dispute", "Team #04 submitted without Loom"] },
+  { title: "Raid validation", count: 9, path: "/admin/curriculum", items: ["Team #07 PR evidence pending", "Team #11 leader forfeiture request", "Team #04 leader repo submitted"] },
 ];
 
 const incidents = [
@@ -70,7 +71,7 @@ export default function AdminOverview() {
             <h2 className="font-display font-semibold text-lg flex items-center gap-2"><Radar className="h-5 w-5 text-accent" /> Live Review Queues</h2>
             <span className="text-[11px] font-mono text-accent">ACTIVE MONITORING</span>
           </div>
-          <div className="grid lg:grid-cols-3 gap-4">
+          <div className="grid lg:grid-cols-4 gap-4">
             {queues.map((q) => (
               <Link key={q.title} to={q.path} className="rounded-xl border border-border bg-muted/30 p-4 hover:border-primary/50 transition-all block">
                 <div className="flex items-center justify-between mb-3">
