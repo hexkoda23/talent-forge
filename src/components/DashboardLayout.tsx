@@ -5,6 +5,7 @@ import {
   Trophy,
   Code2,
   BookOpen,
+  GraduationCap,
   Bell,
   User,
   LogOut,
@@ -24,8 +25,9 @@ import { cn } from "@/lib/utils";
 
 const nav = [
   { to: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
+  { to: "/dashboard/learn", label: "Learn", icon: GraduationCap },
+  { to: "/dashboard/quests", label: "Daily Quest", icon: Trophy },
   { to: "/dashboard/checkpoints", label: "Checkpoints", icon: Map },
-  { to: "/dashboard/quests", label: "Quests & Raids", icon: Trophy },
   { to: "/dashboard/leaderboard", label: "Leaderboard", icon: Crown },
   { to: "/dashboard/workspace", label: "Workspace", icon: Code2 },
   { to: "/dashboard/community", label: "Community", icon: MessagesSquare },
