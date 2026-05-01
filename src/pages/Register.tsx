@@ -11,6 +11,7 @@ import {
   IdCard,
   Loader2,
   Lock,
+  MapPin,
   ShieldCheck,
   Smartphone,
   Upload,
@@ -26,6 +27,18 @@ const steps = [
   { id: 1, title: "Identity", icon: UserIcon },
   { id: 2, title: "Documents", icon: IdCard },
   { id: 3, title: "Security", icon: ShieldCheck },
+  { id: 4, title: "Code Zone", icon: MapPin },
+];
+
+const codeZones = [
+  { city: "Ikeja", state: "Lagos", label: "Lagos (Ikeja)", seats: "42 seats", status: "Recommended" },
+  { city: "Lekki", state: "Lagos", label: "Lagos (Lekki)", seats: "28 seats", status: "High demand" },
+  { city: "Badagry", state: "Lagos", label: "Lagos (Badagry)", seats: "18 seats", status: "Open" },
+  { city: "Ibadan", state: "Oyo State", label: "Ibadan (Oyo State)", seats: "35 seats", status: "Open" },
+  { city: "Abeokuta", state: "Ogun State", label: "Abeokuta (Ogun State)", seats: "24 seats", status: "Open" },
+  { city: "Shagamu", state: "Ogun State", label: "Shagamu (Ogun State)", seats: "16 seats", status: "Open" },
+  { city: "Gwarinpa", state: "Abuja", label: "Abuja (Gwarinpa)", seats: "30 seats", status: "Open" },
+  { city: "Wuse", state: "Abuja", label: "Abuja (Wuse)", seats: "22 seats", status: "Open" },
 ];
 
 const Register = () => {
@@ -37,6 +50,7 @@ const Register = () => {
     phone: "",
     email: "",
     school: "",
+    address: "",
     matric: "",
     level: "",
     nin: "",
@@ -46,6 +60,7 @@ const Register = () => {
     phoneLinkedToNin: false,
     duplicateConsent: false,
     truthConsent: false,
+    codeZone: "",
   });
 
   const update = (k: keyof typeof data, v: any) => setData((d) => ({ ...d, [k]: v }));
@@ -53,12 +68,13 @@ const Register = () => {
   const ninValid = /^\d{11}$/.test(data.nin);
   const phoneValid = data.phone.replace(/\D/g, "").length >= 11;
   const canContinue = useMemo(() => {
-    if (step === 1) return data.fullName.trim() && phoneValid && data.email.includes("@") && data.school.trim();
+    if (step === 1) return data.fullName.trim() && phoneValid && data.email.includes("@") && data.school.trim() && data.address.trim().length > 8;
     if (step === 2) return data.matric.trim() && data.level && ninValid && data.schoolId && data.profilePhoto && data.governmentId;
-    return data.phoneLinkedToNin && data.duplicateConsent && data.truthConsent;
+    if (step === 3) return data.phoneLinkedToNin && data.duplicateConsent && data.truthConsent;
+    return !!data.codeZone;
   }, [data, ninValid, phoneValid, step]);
 
-  const next = () => setStep((s) => Math.min(3, s + 1));
+  const next = () => setStep((s) => Math.min(4, s + 1));
   const prev = () => setStep((s) => Math.max(1, s - 1));
 
   const submit = () => {
@@ -78,15 +94,15 @@ const Register = () => {
           <p className="text-sm font-mono uppercase tracking-widest text-secondary mb-3">// secure entry gate</p>
           <h1 className="font-display text-3xl lg:text-5xl font-bold">Verify once. Play next.</h1>
           <p className="text-muted-foreground mt-3 max-w-2xl">
-            TalentOS collects identity, school, NIN, and document evidence before the game opens. Passing the game does not grant access until an admin manually approves your file.
+            TalentOS collects identity, school, address, NIN, document evidence, and your preferred Code Zone before the game opens.
           </p>
         </div>
 
         <div className="mb-8">
           <div className="h-2 bg-muted rounded-full overflow-hidden mb-6">
-            <div className="h-full bg-gradient-primary transition-all duration-500" style={{ width: `${(step / 3) * 100}%` }} />
+            <div className="h-full bg-gradient-primary transition-all duration-500" style={{ width: `${(step / 4) * 100}%` }} />
           </div>
-          <div className="grid grid-cols-3 gap-2">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
             {steps.map((s) => {
               const done = step > s.id;
               const current = step === s.id;
@@ -124,6 +140,9 @@ const Register = () => {
                   <Input value={data.school} onChange={(e) => update("school", e.target.value)} placeholder="University of Lagos" />
                 </Field>
               </div>
+              <Field label="House address">
+                <Input value={data.address} onChange={(e) => update("address", e.target.value)} placeholder="House number, street, area, city, state" />
+              </Field>
               <TrustPanel items={["Phone number is checked against prior applications", "Email and school name are used for duplicate detection", "Admin approval is required even after a high game score"]} />
             </div>
           )}
@@ -185,11 +204,58 @@ const Register = () => {
             </div>
           )}
 
+          {step === 4 && (
+            <div className="space-y-5">
+              <Header title="Choose your Talent Nation Code Zone" subtitle="Pick the closest zone for future physical verification, meetups, workshops, and cohort coordination." />
+              <div className="grid md:grid-cols-2 gap-3">
+                {codeZones.map((zone) => {
+                  const selected = data.codeZone === zone.label;
+                  return (
+                    <button
+                      key={zone.label}
+                      type="button"
+                      onClick={() => update("codeZone", zone.label)}
+                      className={cn(
+                        "text-left rounded-xl border p-4 transition-all",
+                        selected ? "border-primary bg-primary/15 shadow-[0_10px_30px_-18px_hsl(var(--primary)/0.8)]" : "border-border bg-muted/30 hover:border-primary/50"
+                      )}
+                    >
+                      <div className="flex items-start justify-between gap-3">
+                        <div className="flex items-start gap-3">
+                          <div className={cn("h-10 w-10 rounded-lg grid place-items-center", selected ? "bg-primary text-primary-foreground" : "bg-muted text-muted-foreground")}>
+                            <MapPin className="h-5 w-5" />
+                          </div>
+                          <div>
+                            <h3 className="font-display font-semibold">{zone.label}</h3>
+                            <p className="text-xs text-muted-foreground">{zone.city}, {zone.state}</p>
+                          </div>
+                        </div>
+                        {selected && <Check className="h-5 w-5 text-primary shrink-0" />}
+                      </div>
+                      <div className="mt-4 flex items-center justify-between text-xs">
+                        <span className="text-muted-foreground">{zone.seats}</span>
+                        <span className={cn("px-2 py-1 rounded border font-mono", zone.status === "Recommended" ? "border-accent/30 bg-accent/15 text-accent" : "border-border bg-background/40 text-muted-foreground")}>
+                          {zone.status}
+                        </span>
+                      </div>
+                    </button>
+                  );
+                })}
+              </div>
+              <div className="rounded-xl border border-primary/30 bg-primary/10 p-4 flex gap-3 text-sm text-muted-foreground">
+                <MapPin className="h-5 w-5 text-primary shrink-0 mt-0.5" />
+                <p>
+                  Your selected Code Zone is attached to your application. For the demo, selecting a zone immediately unlocks the game start button.
+                </p>
+              </div>
+            </div>
+          )}
+
           <div className="flex items-center justify-between mt-8 pt-6 border-t border-border">
             <Button variant="ghost" onClick={prev} disabled={step === 1 || submitting} className="gap-2">
               <ArrowLeft className="h-4 w-4" /> Back
             </Button>
-            {step < 3 ? (
+            {step < 4 ? (
               <Button variant="hero" onClick={next} disabled={!canContinue} className="gap-2">
                 Continue <ArrowRight className="h-4 w-4" />
               </Button>
