@@ -9,7 +9,7 @@ const Result = () => {
   const total: number = location.state?.total ?? 78;
   const breakdown = location.state?.breakdown ?? { memory: 70, logic: 80, speed: 84 };
   const [processing, setProcessing] = useState(false);
-  const qualified = total >= 80;
+  const qualified = total >= 70;
 
   if (processing) return <ProcessingView qualified={qualified} />;
 
@@ -45,7 +45,7 @@ const Result = () => {
           </div>
           <p className="text-xs text-muted-foreground mt-3 max-w-sm mx-auto">
             {qualified
-              ? "You scored 80% or higher. For this demo, you can enter the user dashboard immediately."
+              ? "You scored 70% or higher. For this demo, you can enter the user dashboard immediately."
               : "Your application and score will be reviewed by the Talent Nation team within 48 hours."}
           </p>
         </div>
