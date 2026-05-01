@@ -33,7 +33,7 @@ export default function AdminModeration() {
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         <Metric icon={Flag} label="Open flags" value="37" tone="text-warning" />
         <Metric icon={Timer} label="Suspensions" value="18" tone="text-warning" />
-        <Metric icon={Ban} label="Banned users" value="84" tone="text-destructive" />
+        <Metric icon={Ban} label="Expulsions" value="84" tone="text-destructive" />
         <Metric icon={ClipboardCheck} label="Resolved 30d" value="421" tone="text-accent" />
       </div>
 
@@ -52,7 +52,7 @@ export default function AdminModeration() {
                   <div className="flex flex-wrap gap-2">
                     <Button variant="soft" size="sm"><AlertTriangle className="h-4 w-4" /> Warning</Button>
                     <Button variant="soft" size="sm"><Timer className="h-4 w-4" /> Suspend</Button>
-                    <Button variant="destructive" size="sm"><Ban className="h-4 w-4" /> Ban</Button>
+                    <Button variant="destructive" size="sm"><Ban className="h-4 w-4" /> Expel</Button>
                   </div>
                 </div>
               </div>

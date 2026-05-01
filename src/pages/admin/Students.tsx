@@ -26,7 +26,7 @@ const users = [
 const timeline = [
   "Checkpoint CP-04 passed with 94%, no proctor flags",
   "Raid #07 contribution validated by admin interview",
-  "Peer audit score adjusted from 98 to 82 by moderator",
+  "Peer audit score adjusted from 98 to 82 by campus_admin",
   "Warning issued for missed quest streak on Apr 22",
 ];
 

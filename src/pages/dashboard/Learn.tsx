@@ -4,14 +4,11 @@ import {
   Play,
   CheckCircle2,
   BookOpen,
-  Code2,
   Lock,
   ArrowRight,
   Clock,
   PlayCircle,
   Sparkles,
-  GitBranch,
-  TerminalSquare,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -32,9 +29,9 @@ const reading: { title: string; minutes: number; status: Status }[] = [
 ];
 
 const exercises: { title: string; desc: string; status: Status }[] = [
-  { title: "Embed 10 sentences with sentence-transformers", desc: "GTEA · Python sandbox · auto-graded", status: "done" },
-  { title: "Build a top-k semantic search function", desc: "GTEA · push to your repo branch", status: "current" },
-  { title: "Add a re-ranker on top of your retriever", desc: "GTEA · stretch", status: "locked" },
+  { title: "Embed 10 sentences with sentence-transformers", desc: "Practice brief tied to the current quest", status: "done" },
+  { title: "Build a top-k semantic search function", desc: "Continue from this module into the quest task", status: "current" },
+  { title: "Add a re-ranker on top of your retriever", desc: "Optional extension when the admin opens it", status: "locked" },
 ];
 
 const Learn = () => {
@@ -60,8 +57,8 @@ const Learn = () => {
             Embeddings & Vector Search
           </h1>
           <p className="text-muted-foreground mt-2 max-w-xl text-sm lg:text-base">
-            Finish today's videos, reading, and lab exercises to{" "}
-            <span className="text-primary font-semibold">unlock your Daily Quest</span>.
+            Finish the module content to{" "}
+            <span className="text-primary font-semibold">continue to your quest</span>.
           </p>
 
           <div className="mt-5">
@@ -104,13 +101,13 @@ const Learn = () => {
         <div className="flex-1 text-sm">
           <p className="font-semibold">
             {learnComplete
-              ? "Learn phase complete — Daily Quest unlocked."
-              : "Daily Quest is locked."}
+              ? "Module complete — quest available."
+              : "Quest is locked."}
           </p>
           <p className="text-muted-foreground mt-0.5">
             {learnComplete
-              ? "You have until 11:59 PM to submit. Max 3 attempts."
-              : "Finish every video, reading and lab exercise on this page first."}
+              ? "Open the current admin-set quest when you are ready."
+              : "Finish the required videos and readings on this page first."}
           </p>
         </div>
         <Link to="/dashboard/quests">
@@ -180,24 +177,23 @@ const Learn = () => {
         </div>
       </div>
 
-      {/* GTEA exercises */}
+      {/* Quest handoff */}
       <div className="glass-panel rounded-2xl p-5">
         <div className="flex flex-wrap items-center justify-between gap-3 mb-4">
           <div>
             <p className="text-xs font-mono uppercase tracking-widest text-secondary mb-1">
-              // gtea · practice lab
+              // quest bridge
             </p>
             <h2 className="font-display text-xl font-semibold flex items-center gap-2">
-              <Code2 className="h-5 w-5 text-primary" />
-              Guided coding exercises
+              Continue into the quest
             </h2>
             <p className="text-sm text-muted-foreground mt-1">
-              Push commits straight to your branch. Auto-graded inside GTEA.
+              Gitea is used for private code submission repos. The quest page carries the actual challenge brief and submission rules.
             </p>
           </div>
-          <Link to="/dashboard/workspace">
+          <Link to="/dashboard/quests">
             <Button variant="soft" size="sm" className="gap-2">
-              <GitBranch className="h-4 w-4" /> Open GTEA
+              Go to quest <ArrowRight className="h-4 w-4" />
             </Button>
           </Link>
         </div>
@@ -219,7 +215,7 @@ const Learn = () => {
                   ) : e.status === "done" ? (
                     <CheckCircle2 className="h-4 w-4 text-accent" />
                   ) : (
-                    <TerminalSquare className="h-4 w-4 text-primary" />
+                    <ArrowRight className="h-4 w-4 text-primary" />
                   )}
                 </div>
                 <span

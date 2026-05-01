@@ -3,24 +3,24 @@ import { Trophy, Crown, Medal, TrendingUp, ArrowUp, ArrowDown, Minus, Sparkles }
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
-type Scope = "global" | "cohort" | "weekly";
+type Scope = "global" | "campus" | "course" | "program";
 
 const ME = "Adaeze Okafor";
 
 const players = [
-  { name: "Ibrahim Musa", level: 4, xp: 9820, sp: 18, change: 0, badge: "Architect" },
-  { name: "Chinwe Eze", level: 4, xp: 9540, sp: 17, change: 1, badge: "Vector Sage" },
-  { name: "Tunde Adeyemi", level: 4, xp: 9210, sp: 16, change: -1, badge: "Prompt Smith" },
-  { name: "Fatima Bello", level: 3, xp: 8740, sp: 14, change: 2, badge: "Data Hunter" },
-  { name: "Emeka Okonkwo", level: 3, xp: 8390, sp: 13, change: 0, badge: "Pipeline Pro" },
-  { name: "Aisha Lawal", level: 3, xp: 7980, sp: 12, change: 3, badge: "RAG Crafter" },
-  { name: "Segun Olatunji", level: 3, xp: 7620, sp: 11, change: -2, badge: "Fine-Tuner" },
-  { name: "Ngozi Ugo", level: 3, xp: 7340, sp: 10, change: 1, badge: "Eval Master" },
-  { name: "Yusuf Garba", level: 2, xp: 6980, sp: 9, change: 0, badge: "Deployer" },
-  { name: "Blessing John", level: 2, xp: 6720, sp: 9, change: 4, badge: "Notebook Ninja" },
-  { name: "Kelvin Ade", level: 2, xp: 6510, sp: 8, change: -1, badge: "API Forger" },
-  { name: "Halima Sani", level: 2, xp: 6280, sp: 8, change: 0, badge: "Embed Sensei" },
-  { name: ME, level: 2, xp: 2480, sp: 4, change: 6, badge: "Vector Initiate" },
+  { name: "Ibrahim Musa", level: 4, xp: 9820, quests: 28, raids: 6, change: 0, badge: "Architect" },
+  { name: "Chinwe Eze", level: 4, xp: 9540, quests: 27, raids: 6, change: 1, badge: "Vector Sage" },
+  { name: "Tunde Adeyemi", level: 4, xp: 9210, quests: 25, raids: 5, change: -1, badge: "Prompt Smith" },
+  { name: "Fatima Bello", level: 3, xp: 8740, quests: 24, raids: 5, change: 2, badge: "Data Hunter" },
+  { name: "Emeka Okonkwo", level: 3, xp: 8390, quests: 23, raids: 5, change: 0, badge: "Pipeline Pro" },
+  { name: "Aisha Lawal", level: 3, xp: 7980, quests: 22, raids: 4, change: 3, badge: "RAG Crafter" },
+  { name: "Segun Olatunji", level: 3, xp: 7620, quests: 20, raids: 4, change: -2, badge: "Fine-Tuner" },
+  { name: "Ngozi Ugo", level: 3, xp: 7340, quests: 19, raids: 4, change: 1, badge: "Eval Master" },
+  { name: "Yusuf Garba", level: 2, xp: 6980, quests: 18, raids: 3, change: 0, badge: "Deployer" },
+  { name: "Blessing John", level: 2, xp: 6720, quests: 17, raids: 3, change: 4, badge: "Notebook Ninja" },
+  { name: "Kelvin Ade", level: 2, xp: 6510, quests: 16, raids: 3, change: -1, badge: "API Forger" },
+  { name: "Halima Sani", level: 2, xp: 6280, quests: 15, raids: 2, change: 0, badge: "Embed Sensei" },
+  { name: ME, level: 2, xp: 2480, quests: 12, raids: 2, change: 6, badge: "Vector Initiate" },
 ];
 
 const Leaderboard = () => {
@@ -36,10 +36,10 @@ const Leaderboard = () => {
         <div>
           <p className="text-xs font-mono uppercase tracking-widest text-secondary mb-2">// hall of legends</p>
           <h1 className="font-display text-3xl lg:text-4xl font-bold">Leaderboard</h1>
-          <p className="text-muted-foreground mt-2">Climb. Compete. Conquer the cohort.</p>
+          <p className="text-muted-foreground mt-2">Rank by XP, quests completed, raids passed, or custom admin metrics.</p>
         </div>
         <div className="flex gap-2 p-1 rounded-xl bg-muted border border-border">
-          {(["global", "cohort", "weekly"] as Scope[]).map((s) => (
+          {(["global", "campus", "course", "program"] as Scope[]).map((s) => (
             <button
               key={s}
               onClick={() => setScope(s)}
@@ -121,7 +121,7 @@ const Leaderboard = () => {
           <div className="col-span-5">Engineer</div>
           <div className="col-span-2">Level</div>
           <div className="col-span-2 text-right">XP</div>
-          <div className="col-span-1 text-right">SP</div>
+          <div className="col-span-1 text-right">Quests</div>
           <div className="col-span-1 text-right">Δ</div>
         </div>
         {sorted.map((p, i) => {
@@ -150,7 +150,7 @@ const Leaderboard = () => {
                 <span className="px-2 py-0.5 rounded-md bg-muted text-xs font-mono">L{p.level}</span>
               </div>
               <div className="col-span-2 text-right font-mono">{p.xp.toLocaleString()}</div>
-              <div className="col-span-1 text-right font-mono text-secondary">{p.sp}</div>
+              <div className="col-span-1 text-right font-mono text-secondary">{p.quests}</div>
               <div className="col-span-1 text-right">
                 {p.change > 0 ? (
                   <span className="inline-flex items-center text-accent text-xs"><ArrowUp className="h-3 w-3" />{p.change}</span>

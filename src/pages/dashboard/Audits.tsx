@@ -1,4 +1,4 @@
-import { ArrowRight, ClipboardCheck, Clock, FileSearch, Gauge, ShieldAlert, Star, Zap } from "lucide-react";
+import { ArrowRight, ClipboardCheck, Clock, FileSearch, ListChecks, Star, Zap } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 const audits = [
@@ -7,7 +7,7 @@ const audits = [
   { title: "Ifeanyi's prompt-defense write-up", desc: "Check plagiarism signals and technical accuracy.", status: "open", reward: 35, due: "Tomorrow 12:00 PM", risk: "ai-check" },
 ];
 
-const rubrics = ["Correctness", "Security", "Evidence", "Clarity", "Fairness"];
+const rubrics = ["Requirement", "Functional", "Compliance", "Bonus", "Social"];
 
 const Audits = () => (
   <div className="space-y-6 animate-fade-up">
@@ -15,14 +15,14 @@ const Audits = () => (
       <p className="text-xs font-mono uppercase tracking-widest text-accent mb-2">// peer audit desk</p>
       <h1 className="font-display text-2xl lg:text-4xl font-bold">Audit Queue</h1>
       <p className="text-muted-foreground mt-2 max-w-2xl">
-        Review other students' submissions for XP. Every score is compared against AI grading and moderator spot checks.
+        Review other students' submissions for XP. Every score can be checked by AI grading and campus_admin spot checks.
       </p>
     </div>
 
     <div className="grid sm:grid-cols-3 gap-4">
       <Metric icon={ClipboardCheck} label="Assigned audits" value="3" tone="text-accent" />
-      <Metric icon={Gauge} label="Fairness score" value="94%" tone="text-primary" />
-      <Metric icon={ShieldAlert} label="Bias flags" value="0" tone="text-warning" />
+      <Metric icon={ListChecks} label="Question categories" value="5" tone="text-primary" />
+      <Metric icon={ClipboardCheck} label="Completed audits" value="18" tone="text-warning" />
     </div>
 
     <div className="grid lg:grid-cols-[2fr,1fr] gap-5">
@@ -64,7 +64,7 @@ const Audits = () => (
           ))}
         </div>
         <div className="mt-4 rounded-xl border border-warning/30 bg-warning/5 p-3 text-xs text-muted-foreground">
-          Random or consistently inflated scores trigger moderator review and can lead to warnings or suspension.
+        Audit questions are grouped by requirement, functional, compliance, bonus, and social categories.
         </div>
       </aside>
     </div>

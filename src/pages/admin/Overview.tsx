@@ -18,7 +18,7 @@ const stats = [
   { label: "Total users", value: "12,487", note: "1,920 active students", icon: Users, tone: "text-primary" },
   { label: "Applicants", value: "284", note: "61 pending verification", icon: ClipboardCheck, tone: "text-warning" },
   { label: "Avg completion", value: "78%", note: "+6% this week", icon: Gauge, tone: "text-accent" },
-  { label: "Cheating incidents", value: "37", note: "12 critical reviews", icon: ShieldAlert, tone: "text-destructive" },
+  { label: "Integrity records", value: "37", note: "filtered from record rows", icon: ShieldAlert, tone: "text-destructive" },
   { label: "Suspensions", value: "18", note: "4 expire today", icon: Ban, tone: "text-warning" },
   { label: "System health", value: "99.98%", note: "all services operational", icon: HeartPulse, tone: "text-accent" },
 ];
@@ -115,7 +115,7 @@ export default function AdminOverview() {
         <div className="mt-3 grid sm:grid-cols-4 gap-3 text-xs">
           <span className="rounded-lg bg-muted/40 border border-border p-2">Accepted: 74%</span>
           <span className="rounded-lg bg-muted/40 border border-border p-2">Rejected: 18%</span>
-          <span className="rounded-lg bg-muted/40 border border-border p-2">Conditional: 8%</span>
+          <span className="rounded-lg bg-muted/40 border border-border p-2">Pending: 8%</span>
           <span className="rounded-lg bg-muted/40 border border-border p-2">Inactive: 11%</span>
         </div>
       </Card>

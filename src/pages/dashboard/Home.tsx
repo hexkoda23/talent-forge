@@ -20,7 +20,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
-// --- Mock daily state ---
+// --- Mock curriculum state ---
 const learnPct = 65;            // < 100 means quest is locked
 const questAttemptsLeft = 3;    // mock
 const weekCompletionPct = 72;   // checkpoint readiness
@@ -66,9 +66,7 @@ const DashboardHome = () => {
                 Adaeze, lock in 🔒
               </h1>
               <p className="text-muted-foreground mt-2 max-w-lg text-sm lg:text-base">
-                Finish today's <span className="text-primary font-semibold">Learn phase</span> to
-                unlock your <span className="text-secondary font-semibold">Daily Quest</span>.
-                Quest closes at <span className="font-mono text-foreground">11:59 PM</span>.
+                Continue your current subject, complete the active quest, and prepare for the next curriculum checkpoint.
               </p>
             </div>
             <div className="flex flex-col items-end gap-2">
@@ -83,17 +81,17 @@ const DashboardHome = () => {
             </div>
           </div>
 
-          {/* Daily progress: 3-step gate */}
+          {/* Curriculum progress */}
           <div className="mt-6 grid grid-cols-3 gap-2 lg:gap-3">
             <DayStep
               n={1}
-              label="Learn"
+              label="Current subject"
               status={learnDone ? "done" : "current"}
               pct={learnPct}
             />
             <DayStep
               n={2}
-              label="Daily Quest"
+              label="Quest"
               status={learnDone ? "current" : "locked"}
             />
             <DayStep
@@ -110,17 +108,17 @@ const DashboardHome = () => {
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 lg:gap-4">
         <StatCard icon={Sparkles} label="XP" value={xp.toLocaleString()} trend="+340 this week" tone="primary" />
         <StatCard icon={Flame} label="Streak" value={`${streak} days`} trend="Don't break it" tone="warning" />
-        <StatCard icon={TrendingUp} label="Weekly" value={`${weekCompletionPct}%`} trend="Need 80% for exam" tone="violet" />
+        <StatCard icon={TrendingUp} label="Completion" value={`${weekCompletionPct}%`} trend="Admin checkpoint gate" tone="violet" />
         <StatCard icon={Trophy} label="Rank" value="#24" trend="↑ 6 this week" tone="accent" />
       </div>
 
-      {/* Today's mission */}
+      {/* Current curriculum work */}
       <div className="grid lg:grid-cols-3 gap-5">
         {/* Learn card (today) */}
         <div className="lg:col-span-2 glass-panel rounded-2xl p-5 lg:p-6">
           <div className="flex items-center justify-between mb-3">
             <p className="text-xs font-mono uppercase tracking-widest text-secondary">
-              // step 1 — mandatory
+              // current subject
             </p>
             <span className="px-2.5 py-0.5 rounded-full bg-primary/15 text-primary text-[11px] font-semibold border border-primary/30">
               Learn Phase
@@ -130,8 +128,7 @@ const DashboardHome = () => {
             Embeddings & Vector Search
           </h2>
           <p className="text-sm text-muted-foreground mt-1 mb-4">
-            4 videos · 3 readings · 3 GTEA exercises. Daily Quest stays locked until you
-            finish all of it.
+            4 videos and 3 readings. Continue into the quest when the required content is done.
           </p>
 
           <div className="mb-4">
@@ -169,7 +166,7 @@ const DashboardHome = () => {
         >
           <div className="flex items-center justify-between mb-3">
             <p className="text-xs font-mono uppercase tracking-widest text-secondary">
-              // step 2
+              // active quest
             </p>
             <span
               className={cn(
@@ -179,7 +176,7 @@ const DashboardHome = () => {
                   : "bg-muted text-muted-foreground border-border"
               )}
             >
-              Daily Quest
+              Quest
             </span>
           </div>
 
@@ -191,7 +188,7 @@ const DashboardHome = () => {
                 </div>
                 <p className="text-sm font-semibold">Locked</p>
                 <p className="text-xs text-muted-foreground">
-                  Finish today's Learn phase first
+                  Finish the required module first
                 </p>
               </div>
             </div>
@@ -206,7 +203,7 @@ const DashboardHome = () => {
 
           <div className="space-y-2 text-xs text-muted-foreground">
             <Row icon={Zap} text="+180 XP · +60 early-bird bonus" />
-            <Row icon={Clock} text={`Closes 11:59 PM · ${countdown} left`} />
+            <Row icon={Clock} text={`Admin-set deadline · ${countdown} left`} />
             <Row icon={AlertTriangle} text={`${questAttemptsLeft} of 3 attempts left`} />
           </div>
 
@@ -227,14 +224,13 @@ const DashboardHome = () => {
         <div className="glass-panel rounded-2xl p-5 lg:p-6">
           <div className="flex items-center justify-between mb-3">
             <p className="text-xs font-mono uppercase tracking-widest text-secondary">
-              // weekly checkpoint · saturday
+              // checkpoint
             </p>
-            <span className="text-xs font-mono text-muted-foreground">in 1 day</span>
+            <span className="text-xs font-mono text-muted-foreground">admin scheduled</span>
           </div>
           <h3 className="font-display text-lg font-semibold mb-1">Checkpoint Readiness</h3>
           <p className="text-sm text-muted-foreground mb-3">
-            Need <span className="font-mono">≥ 80%</span> weekly completion to unlock the
-            exam.
+            Checkpoints are curriculum boundary gates. Admins decide the readiness rule and schedule.
           </p>
 
           <div className="relative h-3 bg-muted rounded-full overflow-hidden border border-border mb-2">
@@ -272,7 +268,7 @@ const DashboardHome = () => {
         <div className="glass-panel rounded-2xl p-5 lg:p-6">
           <div className="flex items-center justify-between mb-3">
             <p className="text-xs font-mono uppercase tracking-widest text-secondary">
-              // weekly raid · fri → sun
+              // raid
             </p>
             <span className="px-2.5 py-0.5 rounded-full bg-destructive/15 text-destructive text-[11px] font-semibold border border-destructive/30">
               Live
@@ -282,8 +278,7 @@ const DashboardHome = () => {
             Raid: Multi-agent support bot
           </h3>
           <p className="text-sm text-muted-foreground mb-3">
-            Auto-grouped with 2 random teammates. Submit by Sunday 11:59 PM. Admin will
-            interview each member to validate.
+            Auto-grouped with 2 teammates. Each member must explain the code they authored during validation.
           </p>
 
           <div className="flex -space-x-2 mb-4">

@@ -7,7 +7,7 @@ import { Textarea } from "@/components/ui/textarea";
 const apps = [
   { id: "A-9301", name: "Adaeze Okafor", phone: "+234 801 444 1902", email: "adaeze@unilag.edu.ng", school: "UNILAG", matric: "CSC/20/1032", level: "400L", nin: "84293311902", score: 1000, pass: "pass", auto: true, status: "pending", issue: "Game-qualified. Awaiting manual identity approval." },
   { id: "A-9298", name: "Chinedu Eze", phone: "+234 816 222 7788", email: "chinedu@unn.edu.ng", school: "UNN", matric: "ENG/21/0441", level: "300L", nin: "33819902551", score: 640, pass: "review", auto: false, status: "flagged", issue: "Student ID appears blurry" },
-  { id: "A-9281", name: "Hauwa Ibrahim", phone: "+234 809 118 3344", email: "hauwa@abu.edu.ng", school: "ABU Zaria", matric: "IT/19/7812", level: "400L", nin: "77102245113", score: 710, pass: "review", auto: false, status: "conditional", issue: "Phone identity mismatch" },
+  { id: "A-9281", name: "Hauwa Ibrahim", phone: "+234 809 118 3344", email: "hauwa@abu.edu.ng", school: "ABU Zaria", matric: "IT/19/7812", level: "400L", nin: "77102245113", score: 710, pass: "review", auto: false, status: "pending", issue: "Phone identity mismatch" },
 ];
 
 const initialChecks = [
@@ -152,7 +152,7 @@ export default function AdminApplications() {
                 </p>
                 <div className="flex flex-wrap gap-2 mt-4">
                   <Button variant="hero" size="sm"><Check className="h-4 w-4" /> Accept user</Button>
-                  <Button variant="soft" size="sm"><Send className="h-4 w-4" /> Conditional acceptance</Button>
+                  <Button variant="soft" size="sm"><Send className="h-4 w-4" /> Send correction request</Button>
                   <Button variant="destructive" size="sm"><X className="h-4 w-4" /> Reject user</Button>
                 </div>
               </div>

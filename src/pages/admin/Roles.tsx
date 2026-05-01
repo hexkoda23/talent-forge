@@ -1,20 +1,20 @@
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Crown, Shield, Eye, Plus, MoreVertical } from "lucide-react";
+import { Crown, Shield, Eye, Plus, MoreVertical, Code2 } from "lucide-react";
 
 const team = [
-  { name: "Tobi Adeyemi", email: "tobi@talent.ng", role: "Super Admin", icon: Crown, color: "text-warning" },
-  { name: "Ada Nwoye", email: "ada@talent.ng", role: "Moderator", icon: Shield, color: "text-secondary" },
-  { name: "Kunle Bello", email: "kunle@talent.ng", role: "Moderator", icon: Shield, color: "text-secondary" },
-  { name: "Zainab Musa", email: "zainab@talent.ng", role: "Reviewer", icon: Eye, color: "text-primary" },
-  { name: "Femi Olu", email: "femi@talent.ng", role: "Reviewer", icon: Eye, color: "text-primary" },
+  { name: "Tobi Adeyemi", email: "tobi@talent.ng", role: "superadmin", icon: Crown, color: "text-warning" },
+  { name: "Ada Nwoye", email: "ada@talent.ng", role: "campus_admin", icon: Shield, color: "text-secondary" },
+  { name: "Kunle Bello", email: "kunle@talent.ng", role: "campus_admin", icon: Shield, color: "text-secondary" },
+  { name: "Zainab Musa", email: "zainab@talent.ng", role: "coding_mentor", icon: Code2, color: "text-primary" },
+  { name: "Femi Olu", email: "femi@talent.ng", role: "supervisor", icon: Eye, color: "text-accent" },
 ];
 
 const permissions = [
   { perm: "View applications", sa: true, mod: true, rev: true },
   { perm: "Approve / reject", sa: true, mod: true, rev: true },
   { perm: "Override system decisions", sa: true, mod: true, rev: false },
-  { perm: "Blacklist users", sa: true, mod: true, rev: false },
+  { perm: "Record expulsion", sa: true, mod: true, rev: false },
   { perm: "Edit roles", sa: true, mod: false, rev: false },
   { perm: "Access audit log", sa: true, mod: true, rev: false },
   { perm: "Manage integrations", sa: true, mod: false, rev: false },
@@ -62,8 +62,8 @@ export default function AdminRoles() {
                 <tr className="text-muted-foreground">
                   <th className="text-left pb-2 font-normal">Permission</th>
                   <th className="pb-2 font-normal text-center">SA</th>
-                  <th className="pb-2 font-normal text-center">Mod</th>
-                  <th className="pb-2 font-normal text-center">Rev</th>
+                  <th className="pb-2 font-normal text-center">Campus</th>
+                  <th className="pb-2 font-normal text-center">Mentor</th>
                 </tr>
               </thead>
               <tbody>

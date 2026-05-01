@@ -1,10 +1,10 @@
 import { Trophy, Github, MapPin, Calendar, Star, Award, Code2, Flame, Target, TrendingUp } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
-const projects = [
-  { name: "rag-pipeline-quest", lang: "Python", stars: 12, completed: true },
-  { name: "sentiment-api", lang: "Python", stars: 8, completed: true },
-  { name: "vector-bench", lang: "Python", stars: 24, completed: true },
+const submissions = [
+  { name: "rag-pipeline-quest", type: "Quest repo", status: "passed" },
+  { name: "sentiment-api", type: "Quest repo", status: "passed" },
+  { name: "vector-bench", type: "Raid repo", status: "validated" },
 ];
 
 const badges = [
@@ -48,14 +48,14 @@ const Profile = () => {
       </div>
 
       <div className="grid lg:grid-cols-3 gap-5">
-        {/* Projects */}
+        {/* Submissions */}
         <div className="lg:col-span-2 glass-panel rounded-2xl p-6">
           <div className="flex items-center justify-between mb-4">
-            <h2 className="font-display text-lg font-semibold">Completed projects</h2>
-            <span className="text-xs text-muted-foreground">{projects.length} total</span>
+            <h2 className="font-display text-lg font-semibold">Private submission repos</h2>
+            <span className="text-xs text-muted-foreground">{submissions.length} total</span>
           </div>
           <div className="space-y-2">
-            {projects.map((p) => (
+            {submissions.map((p) => (
               <div key={p.name} className="flex items-center justify-between p-3 rounded-lg border border-border bg-muted/40 hover:border-primary/40 transition-colors">
                 <div className="flex items-center gap-3 min-w-0">
                   <div className="h-9 w-9 rounded-lg bg-primary/15 text-primary grid place-items-center flex-shrink-0">
@@ -63,12 +63,10 @@ const Profile = () => {
                   </div>
                   <div className="min-w-0">
                     <p className="font-mono text-sm font-medium truncate">{p.name}</p>
-                    <p className="text-xs text-muted-foreground">{p.lang}</p>
+                    <p className="text-xs text-muted-foreground">{p.type}</p>
                   </div>
                 </div>
-                <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
-                  <Star className="h-3.5 w-3.5 text-warning" /> {p.stars}
-                </div>
+                <span className="text-[10px] font-mono px-2 py-1 rounded bg-accent/15 text-accent border border-accent/30">{p.status}</span>
               </div>
             ))}
           </div>

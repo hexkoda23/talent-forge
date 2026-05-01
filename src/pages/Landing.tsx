@@ -110,7 +110,7 @@ const Landing = () => {
           <Pillar
             icon={Trophy}
             title="Gamified Curriculum"
-            text="Daily quests, weekly raids, weekly checkpoint exams. Level up like an RPG, ship like a senior engineer."
+            text="Admin-set quests, raids, and checkpoint gates. Level up like an RPG, ship like a senior engineer."
             tone="violet"
           />
           <Pillar
@@ -207,13 +207,12 @@ const Landing = () => {
 
             <Section icon={GraduationCap} title="2. Pick your SIWES duration">
               Choose <b>3 months</b> (sprint), <b>4 months</b> (standard) or <b>6 months</b> (deep dive). The track length
-              adjusts the depth of raids and the number of checkpoint exams — the daily quest rhythm stays the same.
+              adjusts the curriculum depth, raid intensity, and checkpoint count for the selected SIWES window.
             </Section>
 
-            <Section icon={Calendar} title="3. Daily Quests — timed, with deadlines">
-              Every day you receive a quest. Each quest has a hard deadline (e.g. <b>due by 12:00 PM</b> the same day or
-              <b> by 11:59 PM</b>, depending on difficulty). Submit on time → earn XP. Miss the deadline →
-              <b> zero XP for that quest, no exceptions.</b> This builds the consistency real engineers need.
+            <Section icon={Calendar} title="3. Quests — admin-set challenges">
+              Quests are attached to curriculum modules. Admins set each quest's deadline, cooldown, attempts, XP reward,
+              and submission rules. Submit on time → earn XP. Miss the deadline → the configured penalty applies.
             </Section>
 
             <Section icon={Users} title="4. Weekly Raids — auto-grouped teams of 3">
@@ -225,13 +224,12 @@ const Landing = () => {
             <Section icon={ClipboardCheck} title="5. Peer Audits — students grade students">
               After each quest, the system assigns you 2–3 of <b>other students' submissions</b> to audit and score. You
               earn audit XP for thorough, fair reviews. Submissions are double-checked against AI grading and human
-              moderators — fake audits get flagged and penalized.
+              campus admins — fake audits get flagged and penalized.
             </Section>
 
-            <Section icon={Brain} title="6. Weekly Checkpoint Exams">
-              Every week, each student is assigned a personalized <b>Checkpoint Exam</b> — a timed assessment covering
-              that week's topics (embeddings, prompting, RAG, fine-tuning, agents, production AI). You must pass the
-              checkpoint to unlock the next week's quests.
+            <Section icon={Brain} title="6. Checkpoint Gates">
+              Checkpoints are curriculum boundary assessments. Admins decide when they open, what course or subject they
+              cover, the duration, attempt rules, and the score required to continue.
             </Section>
 
             <Section icon={Code2} title="7. Built-in Workspace">
@@ -332,9 +330,9 @@ const Pillar = ({
 const steps = [
   { title: "Play to qualify", text: "No CV needed. Three cognitive games — memory, logic, speed reasoning. The system grades you instantly." },
   { title: "Pick your track", text: "Choose 3, 4 or 6 months to match your SIWES window. Same standards, different depth." },
-  { title: "Daily quests", text: "A new timed quest every day with a hard deadline. Miss it = no XP. Ship it = level up." },
+  { title: "Admin-set quests", text: "Curriculum-attached challenges with deadlines, XP rewards, cooldowns, and attempts controlled by admins." },
   { title: "Weekly raids", text: "Auto-grouped into random teams of 3 every week. Ship a real project together in 7 days." },
-  { title: "Peer audits & exams", text: "Audit other students' work for XP. Pass a weekly checkpoint exam to unlock the next level." },
+  { title: "Peer audits & checkpoints", text: "Audit other students' work for XP. Pass checkpoint gates to progress through the curriculum." },
   { title: "Graduate", text: "Earn your certificate, public portfolio, and signed SIWES letter. Walk out an AI engineer." },
 ];
 

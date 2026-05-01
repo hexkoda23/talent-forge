@@ -45,10 +45,10 @@ const Quests = () => {
     <div className="space-y-6 animate-fade-up">
       <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-3">
         <div>
-          <p className="text-xs font-mono uppercase tracking-widest text-secondary mb-2">// daily mission</p>
-          <h1 className="font-display text-2xl lg:text-4xl font-bold">Daily Quest</h1>
+          <p className="text-xs font-mono uppercase tracking-widest text-secondary mb-2">// quest</p>
+          <h1 className="font-display text-2xl lg:text-4xl font-bold">Quest</h1>
           <p className="text-muted-foreground mt-2 text-sm lg:text-base max-w-2xl">
-            One focused quest per day. Locked until Learn is complete. Closes at 11:59 PM with a hard 3-attempt limit.
+            Curriculum-attached challenges configured by admins. Deadlines, cooldowns, XP, and attempt rules are set per quest.
           </p>
         </div>
         <div className="flex flex-wrap gap-2">
@@ -71,7 +71,7 @@ const Quests = () => {
               </div>
               <h2 className="font-display text-2xl font-bold mb-2">Quest is locked</h2>
               <p className="text-muted-foreground mb-5">
-                Today's quest unlocks once you finish the <span className="text-primary font-semibold">Learn phase</span>.
+                This quest unlocks once you finish the <span className="text-primary font-semibold">required module content</span>.
               </p>
               <div className="w-full max-w-sm mb-5">
                 <div className="flex items-center justify-between text-xs mb-1.5">
@@ -97,11 +97,11 @@ const Quests = () => {
           <div className="glass-panel rounded-2xl p-5 lg:p-6 border-primary/40">
             <div className="flex flex-wrap items-start justify-between gap-3 mb-3">
               <div>
-                <p className="text-xs font-mono uppercase tracking-widest text-secondary mb-1">// today · day 14</p>
+                <p className="text-xs font-mono uppercase tracking-widest text-secondary mb-1">// active quest</p>
                 <h2 className="font-display text-xl lg:text-2xl font-semibold">Build a top-k semantic search API</h2>
               </div>
               <span className="px-2.5 py-1 rounded-full bg-primary/15 text-primary text-[11px] font-semibold border border-primary/30">
-                Daily
+                Admin-set
               </span>
             </div>
             <p className="text-sm text-muted-foreground mb-4">

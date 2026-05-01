@@ -73,7 +73,7 @@ const ProcessingView = ({ qualified }: { qualified: boolean }) => {
   const [stage, setStage] = useState(0);
   const stages = [
     "Analyzing your responses...",
-    "Cross-checking school records...",
+    "Cross-checking submitted details...",
     "Verifying identity documents...",
     qualified ? "Opening the demo user dashboard..." : "Preparing your file for manual admin approval...",
   ];

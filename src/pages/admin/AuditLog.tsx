@@ -9,7 +9,7 @@ const logs = [
   { time: "13:31:09", user: "system", action: "code-uploaded", target: "adaeze/rag-pipeline-mvp", ip: "—" },
   { time: "13:28:55", user: "rev.ada@talent.ng", action: "rejected", target: "A-9290 · Ibrahim K.", ip: "105.112.x.x" },
   { time: "13:21:37", user: "system", action: "submission-received", target: "logbook · Tunde Bakare · W12", ip: "—" },
-  { time: "13:14:02", user: "admin@talent.ng", action: "role-changed", target: "@ada_mod → Moderator", ip: "102.89.x.x" },
+  { time: "13:14:02", user: "admin@talent.ng", action: "role-changed", target: "@ada_mod -> campus_admin", ip: "102.89.x.x" },
   { time: "13:10:18", user: "system", action: "flag-raised", target: "@kayode_w · selfie mismatch", ip: "—" },
 ];
 

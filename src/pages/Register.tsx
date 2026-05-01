@@ -51,6 +51,7 @@ const Register = () => {
     email: "",
     school: "",
     address: "",
+    duration: "6 months",
     matric: "",
     level: "",
     nin: "",
@@ -142,6 +143,23 @@ const Register = () => {
               </div>
               <Field label="House address">
                 <Input value={data.address} onChange={(e) => update("address", e.target.value)} placeholder="House number, street, area, city, state" />
+              </Field>
+              <Field label="SIWES duration">
+                <div className="grid grid-cols-3 gap-2">
+                  {["3 months", "4 months", "6 months"].map((d) => (
+                    <button
+                      key={d}
+                      type="button"
+                      onClick={() => update("duration", d)}
+                      className={cn(
+                        "h-11 rounded-lg border text-sm font-medium transition-all",
+                        data.duration === d ? "bg-primary/15 border-primary text-foreground" : "bg-muted border-border text-muted-foreground hover:text-foreground"
+                      )}
+                    >
+                      {d}
+                    </button>
+                  ))}
+                </div>
               </Field>
               <TrustPanel items={["Phone number is checked against prior applications", "Email and school name are used for duplicate detection", "Admin approval is required even after a high game score"]} />
             </div>
