@@ -5,6 +5,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import Index from "./pages/Index.tsx";
 import NotFound from "./pages/NotFound.tsx";
+import LearnMore from "./pages/LearnMore.tsx";
 import Register from "./pages/Register.tsx";
 import Assessment from "./pages/Assessment.tsx";
 import GamePlay from "./pages/GamePlay.tsx";
@@ -56,6 +57,7 @@ const App = () => (
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<Index />} />
+          <Route path="/learn-more" element={<LearnMore />} />
           <Route path="/register" element={<Register />} />
           <Route path="/assessment" element={<Assessment />} />
           <Route path="/assessment/play" element={<RegisteredGameRoute />} />

@@ -1,13 +1,9 @@
-import { useState } from "react";
 import { Link } from "react-router-dom";
-import { ArrowRight, Calendar, Code2, Gamepad2, GraduationCap, ShieldCheck, Users, X } from "lucide-react";
+import { ArrowRight, Code2, Gamepad2, GraduationCap, ShieldCheck } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Logo } from "@/components/Logo";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 
 const Landing = () => {
-  const [learnOpen, setLearnOpen] = useState(false);
-
   return (
     <div className="min-h-screen relative overflow-hidden bg-background font-mono">
       <header className="relative z-20 px-5 lg:px-10 py-5 flex items-center justify-between border-b border-border">
@@ -40,9 +36,9 @@ const Landing = () => {
                 <Gamepad2 className="h-5 w-5" /> Register for game
               </Button>
             </Link>
-            <Button variant="soft" size="xl" onClick={() => setLearnOpen(true)}>
-              Learn more
-            </Button>
+            <Link to="/learn-more">
+              <Button variant="soft" size="xl">Learn more</Button>
+            </Link>
           </div>
         </section>
 
@@ -109,47 +105,6 @@ const Landing = () => {
         <Logo size="sm" />
         <p>(c) {new Date().getFullYear()} Talent Nation. Built for Nigerian engineers.</p>
       </footer>
-
-      <Dialog open={learnOpen} onOpenChange={setLearnOpen}>
-        <DialogContent className="max-w-3xl max-h-[85vh] overflow-y-auto glass-panel">
-          <DialogHeader>
-            <DialogTitle className="text-2xl lg:text-3xl">How Talent Nation works</DialogTitle>
-            <DialogDescription>
-              A compact walkthrough of the demo flow and the real platform journey.
-            </DialogDescription>
-          </DialogHeader>
-
-          <div className="space-y-6 mt-2 text-sm leading-relaxed">
-            <Section icon={Gamepad2} title="1. Register for game day">
-              Every applicant registers first. The live platform can hold everyone on a countdown page
-              until the official start time.
-            </Section>
-            <Section icon={ShieldCheck} title="2. Complete the private assessment">
-              The assessment is timed and confidential. Applicants only see the details when the official window opens.
-            </Section>
-            <Section icon={Calendar} title="3. Pick your SIWES duration">
-              Choose 3, 4, or 6 months to match your school window.
-            </Section>
-            <Section icon={Code2} title="4. Build in the workspace">
-              Accepted students use a GitHub-style workspace with quests, raids, audits, and checkpoints.
-            </Section>
-            <Section icon={Users} title="5. Graduate with evidence">
-              Students leave with certificates, portfolio work, and SIWES documentation.
-            </Section>
-          </div>
-
-          <div className="mt-6 flex flex-wrap gap-3 justify-end">
-            <Button variant="ghost" onClick={() => setLearnOpen(false)} className="gap-1.5">
-              <X className="h-4 w-4" /> Close
-            </Button>
-            <Link to="/register" onClick={() => setLearnOpen(false)}>
-              <Button variant="hero" className="gap-2">
-                <Gamepad2 className="h-4 w-4" /> Register for game
-              </Button>
-            </Link>
-          </div>
-        </DialogContent>
-      </Dialog>
     </div>
   );
 };
@@ -169,18 +124,6 @@ const Track = ({ months, label }: { months: string; label: string }) => (
       <div className="h-px bg-border mb-5" />
       <p className="text-secondary text-2xl">{months} months</p>
       <p className="text-muted-foreground mt-2">{label}</p>
-    </div>
-  </div>
-);
-
-const Section = ({ icon: Icon, title, children }: { icon: any; title: string; children: React.ReactNode }) => (
-  <div className="flex gap-4">
-    <div className="h-10 w-10 bg-muted border border-border text-primary grid place-items-center flex-shrink-0">
-      <Icon className="h-5 w-5" />
-    </div>
-    <div>
-      <h3 className="text-lg mb-1">{title}</h3>
-      <p className="text-muted-foreground">{children}</p>
     </div>
   </div>
 );
