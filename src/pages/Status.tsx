@@ -19,9 +19,9 @@ const Status = () => {
     review: {
       Icon: Clock,
       tone: "warning",
-      title: "Pending admin verification",
-      sub: "Your game score and identity file are now in the admin review queue.",
-      body: "Even if you passed the game threshold, a TalentOS admin must verify your photo, school ID, NIN, phone linkage, and duplicate checks before you enter the platform.",
+      title: "Awaiting admin confirmation",
+      sub: "Your game score and identity file are now waiting for admin review.",
+      body: "Await email from admin. Even after passing the game cut off, a TalentOS admin must verify your photo, school ID, NIN, phone linkage, and duplicate checks before you enter the platform.",
       cta: { label: "Back to home", to: "/" },
     },
     rejected: {
@@ -59,7 +59,7 @@ const Status = () => {
             <div className="flex items-start gap-3">
               <Mail className="h-5 w-5 text-primary mt-0.5" />
               <div>
-                <p className="font-medium text-sm">Check your inbox</p>
+                <p className="font-medium text-sm">Await email from admin</p>
                 <p className="text-sm text-muted-foreground mt-1">{c.body}</p>
               </div>
             </div>

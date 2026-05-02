@@ -1,269 +1,382 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Brain, Puzzle, Timer, ArrowRight, Trophy, X } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { CornerUpLeft, Play, RotateCcw, Trophy, X } from "lucide-react";
 import { Logo } from "@/components/Logo";
 import { cn } from "@/lib/utils";
+import { formatGameTime, getCompletedAttempts, getGameSettings, MAX_GAME_ATTEMPTS } from "@/lib/gameSettings";
 
-type GameKey = "memory" | "logic" | "speed";
+type GameKey = "memory" | "zzle";
+type Point = { r: number; c: number };
+type ZzleLevel = {
+  title: string;
+  color: "primary" | "secondary" | "accent";
+  path: Point[];
+  decoys: Point[];
+};
+
+const BOARD_SIZE = 12;
 
 const GamePlay = () => {
   const navigate = useNavigate();
+  const settings = getGameSettings();
+  const attemptNumber = Math.min(getCompletedAttempts() + 1, MAX_GAME_ATTEMPTS);
   const [active, setActive] = useState<GameKey>("memory");
-  const [scores, setScores] = useState<Record<GameKey, number>>({ memory: 0, logic: 0, speed: 0 });
+  const [scores, setScores] = useState<Record<GameKey, number>>({ memory: 0, zzle: 0 });
 
-  const order: GameKey[] = ["memory", "logic", "speed"];
+  const order: GameKey[] = ["memory", "zzle"];
   const idx = order.indexOf(active);
-  const overall = Math.round(((idx) / 3) * 100);
+  const progress = ((idx + 1) / order.length) * 100;
 
   const onComplete = (key: GameKey, score: number) => {
-    setScores((s) => ({ ...s, [key]: score }));
-    if (key === "memory") setActive("logic");
-    else if (key === "logic") setActive("speed");
-    else {
-      const total = Math.round((scores.memory + scores.logic + score) / 3);
-      navigate("/assessment/result", { state: { total, breakdown: { ...scores, speed: score } } });
+    const nextScores = { ...scores, [key]: score };
+    setScores(nextScores);
+
+    if (key === "memory") {
+      setActive("zzle");
+      return;
     }
+
+    const total = Math.round((nextScores.memory + nextScores.zzle) / 2);
+    navigate("/assessment/result", { state: { total, breakdown: nextScores, attemptNumber } });
   };
 
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="min-h-screen flex flex-col bg-background font-mono">
       <header className="px-5 lg:px-10 py-4 flex items-center justify-between border-b border-border">
         <Logo size="sm" />
         <div className="flex items-center gap-4">
-          <div className="hidden sm:flex items-center gap-2 text-xs font-mono text-muted-foreground">
-            Game {idx + 1} of 3
+          <div className="hidden sm:flex items-center gap-2 text-xs text-muted-foreground">
+            Game {idx + 1} / 2
           </div>
-          <div className="w-32 sm:w-48 h-1.5 bg-muted rounded-full overflow-hidden">
-            <div className="h-full bg-gradient-primary transition-all" style={{ width: `${overall + 33}%` }} />
+          <div className="hidden md:flex text-xs text-muted-foreground">
+            Trial {attemptNumber} / {MAX_GAME_ATTEMPTS}
           </div>
-          <button onClick={() => navigate("/")} className="h-9 w-9 grid place-items-center rounded-lg hover:bg-muted">
+          <div className="w-32 sm:w-56 h-px bg-border">
+            <div className="h-px bg-primary transition-all" style={{ width: `${progress}%` }} />
+          </div>
+          <button onClick={() => navigate("/")} className="h-9 w-9 grid place-items-center border border-transparent hover:border-border">
             <X className="h-4 w-4" />
           </button>
         </div>
       </header>
 
-      <div className="flex-1 px-5 py-8 lg:py-12 max-w-3xl w-full mx-auto">
-        {active === "memory" && <MemoryGrid onComplete={(s) => onComplete("memory", s)} />}
-        {active === "logic" && <LogicPuzzle onComplete={(s) => onComplete("logic", s)} />}
-        {active === "speed" && <SpeedReasoning onComplete={(s) => onComplete("speed", s)} />}
-      </div>
+      <main className="flex-1 px-5 py-8 lg:py-10 max-w-5xl w-full mx-auto">
+        {active === "memory" && <MemoryGrid settings={settings} onComplete={(score) => onComplete("memory", score)} />}
+        {active === "zzle" && <ZzleGame settings={settings} onComplete={(score) => onComplete("zzle", score)} />}
+      </main>
     </div>
   );
 };
 
-/* ---------------- Memory Grid ---------------- */
-const MemoryGrid = ({ onComplete }: { onComplete: (score: number) => void }) => {
+const memoryProfiles = {
+  standard: { rounds: 4, baseLength: 4, revealMs: 420, gapMs: 240, mistakes: 2 },
+  hard: { rounds: 5, baseLength: 5, revealMs: 320, gapMs: 170, mistakes: 2 },
+  boss: { rounds: 5, baseLength: 6, revealMs: 240, gapMs: 120, mistakes: 1 },
+};
+
+const MemoryGrid = ({ settings, onComplete }: { settings: ReturnType<typeof getGameSettings>; onComplete: (score: number) => void }) => {
+  const profile = memoryProfiles[settings.difficulty];
   const [round, setRound] = useState(1);
   const [sequence, setSequence] = useState<number[]>([]);
   const [showing, setShowing] = useState<number | null>(null);
-  const [phase, setPhase] = useState<"idle" | "show" | "input" | "wrong">("idle");
+  const [phase, setPhase] = useState<"show" | "input" | "wrong">("show");
   const [userInput, setUserInput] = useState<number[]>([]);
   const [score, setScore] = useState(0);
+  const [mistakes, setMistakes] = useState(0);
+  const [timeLeft, setTimeLeft] = useState(settings.memorySeconds);
 
-  const startRound = () => {
-    const len = 2 + round;
-    const seq = Array.from({ length: len }, () => Math.floor(Math.random() * 9));
+  useEffect(() => {
+    if (timeLeft <= 0) {
+      onComplete(Math.min(100, score));
+      return;
+    }
+
+    const timer = window.setTimeout(() => setTimeLeft((seconds) => seconds - 1), 1000);
+    return () => window.clearTimeout(timer);
+  }, [onComplete, score, timeLeft]);
+
+  useEffect(() => {
+    const len = round + profile.baseLength;
+    const seq = Array.from({ length: len }, () => Math.floor(Math.random() * 16));
     setSequence(seq);
     setUserInput([]);
     setPhase("show");
+
     seq.forEach((cell, i) => {
-      setTimeout(() => setShowing(cell), i * 600);
-      setTimeout(() => setShowing(null), i * 600 + 350);
+      const stepMs = profile.revealMs + profile.gapMs;
+      window.setTimeout(() => setShowing(cell), i * stepMs);
+      window.setTimeout(() => setShowing(null), i * stepMs + profile.revealMs);
     });
-    setTimeout(() => setPhase("input"), seq.length * 600 + 200);
-  };
 
-  useEffect(() => { startRound(); /* eslint-disable-next-line */ }, [round]);
+    const ready = window.setTimeout(() => setPhase("input"), seq.length * (profile.revealMs + profile.gapMs) + 120);
+    return () => window.clearTimeout(ready);
+  }, [profile.baseLength, profile.gapMs, profile.revealMs, round]);
 
-  const tap = (i: number) => {
+  const tap = (cell: number) => {
     if (phase !== "input") return;
-    const next = [...userInput, i];
+
+    const next = [...userInput, cell];
     setUserInput(next);
-    if (sequence[next.length - 1] !== i) {
+
+    if (sequence[next.length - 1] !== cell) {
+      const nextMistakes = mistakes + 1;
+      setMistakes(nextMistakes);
       setPhase("wrong");
-      setTimeout(() => onComplete(score), 800);
+
+      window.setTimeout(() => {
+        if (nextMistakes >= profile.mistakes) onComplete(score);
+        else {
+          setUserInput([]);
+          setPhase("input");
+        }
+      }, 650);
       return;
     }
+
     if (next.length === sequence.length) {
-      const newScore = score + round * 10;
+      const newScore = score + 14 + round * 6;
       setScore(newScore);
-      if (round >= 5) onComplete(newScore + 20);
-      else setTimeout(() => setRound((r) => r + 1), 600);
+      if (round >= profile.rounds) onComplete(Math.min(100, newScore + Math.max(0, Math.floor(timeLeft / 5))));
+      else window.setTimeout(() => setRound((value) => value + 1), 550);
     }
   };
 
   return (
     <div className="animate-fade-up">
-      <GameHeader icon={Brain} title="Memory Grid" subtitle={`Round ${round} · ${phase === "show" ? "Watch closely…" : phase === "input" ? "Repeat the sequence" : phase === "wrong" ? "Sequence broken" : ""}`} score={score} />
-      <div className="grid grid-cols-3 gap-3 max-w-sm mx-auto mt-8">
-        {Array.from({ length: 9 }).map((_, i) => (
-          <button
-            key={i}
-            onClick={() => tap(i)}
-            disabled={phase !== "input"}
-            className={cn(
-              "aspect-square rounded-2xl border-2 border-border bg-muted transition-all duration-150",
-              showing === i && "bg-gradient-primary border-primary scale-95 glow-primary",
-              phase === "input" && "hover:border-primary/60 hover:bg-muted/70",
-              phase === "wrong" && "border-destructive/40"
-            )}
-          />
-        ))}
+      <GameHeader title="Game #1 - Memory" subtitle={`Round ${round} / ${profile.rounds}`} score={score} time={`Time Left: ${formatGameTime(timeLeft)}`} />
+      <div className="mt-10 grid grid-cols-4 gap-2 max-w-md mx-auto">
+        {Array.from({ length: 16 }).map((_, cell) => {
+          const hit = userInput.includes(cell);
+          return (
+            <button
+              key={cell}
+              onClick={() => tap(cell)}
+              disabled={phase !== "input"}
+              className={cn(
+                "aspect-square border bg-muted transition-colors",
+                showing === cell && "bg-primary border-primary",
+                hit && phase === "input" && "bg-secondary/60 border-secondary",
+                phase === "input" && "hover:border-primary",
+                phase === "wrong" && "border-destructive/60"
+              )}
+              aria-label={`Memory cell ${cell + 1}`}
+            />
+          );
+        })}
       </div>
-      <p className="text-center text-xs text-muted-foreground mt-6 font-mono">
-        Difficulty: {Array.from({ length: round }).map(() => "▮").join(" ")}
-      </p>
-    </div>
-  );
-};
-
-/* ---------------- Logic Puzzle ---------------- */
-const puzzles = [
-  { q: ["2", "4", "8", "16", "?"], a: "32", choices: ["24", "32", "20", "64"] },
-  { q: ["A", "C", "E", "G", "?"], a: "I", choices: ["H", "I", "J", "K"] },
-  { q: ["▲", "■", "▲", "■", "?"], a: "▲", choices: ["■", "●", "▲", "◆"] },
-  { q: ["1", "1", "2", "3", "5", "?"], a: "8", choices: ["6", "7", "8", "9"] },
-];
-
-const LogicPuzzle = ({ onComplete }: { onComplete: (score: number) => void }) => {
-  const [i, setI] = useState(0);
-  const [score, setScore] = useState(0);
-  const [picked, setPicked] = useState<string | null>(null);
-
-  const current = puzzles[i];
-
-  const choose = (c: string) => {
-    if (picked) return;
-    setPicked(c);
-    const right = c === current.a;
-    if (right) setScore((s) => s + 25);
-    setTimeout(() => {
-      if (i + 1 >= puzzles.length) onComplete(score + (right ? 25 : 0));
-      else { setI((x) => x + 1); setPicked(null); }
-    }, 700);
-  };
-
-  return (
-    <div className="animate-fade-up">
-      <GameHeader icon={Puzzle} title="Logic Puzzle" subtitle={`Question ${i + 1} of ${puzzles.length}`} score={score} />
-      <div className="glass-panel rounded-2xl p-8 mt-8">
-        <div className="flex items-center justify-center gap-3 mb-8 flex-wrap">
-          {current.q.map((v, idx) => (
-            <div key={idx} className={cn(
-              "h-16 w-16 rounded-xl grid place-items-center font-display text-2xl font-bold",
-              v === "?" ? "bg-gradient-primary text-primary-foreground glow-primary" : "bg-muted border border-border"
-            )}>
-              {v}
-            </div>
-          ))}
-        </div>
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-          {current.choices.map((c) => {
-            const isPicked = picked === c;
-            const isRight = picked && c === current.a;
-            const isWrong = picked === c && c !== current.a;
-            return (
-              <button
-                key={c}
-                onClick={() => choose(c)}
-                disabled={!!picked}
-                className={cn(
-                  "h-14 rounded-xl border-2 font-display text-xl font-bold transition-all",
-                  !picked && "border-border bg-muted hover:border-primary hover:bg-muted/70",
-                  isRight && "border-accent bg-accent/15 text-accent",
-                  isWrong && "border-destructive bg-destructive/15 text-destructive",
-                  picked && !isPicked && "opacity-40"
-                )}
-              >
-                {c}
-              </button>
-            );
-          })}
-        </div>
+      <div className="mt-8 flex items-center justify-center gap-6 text-xs text-muted-foreground">
+        <span>Sequence: {sequence.length}</span>
+        <span>Mistakes: {mistakes} / {profile.mistakes}</span>
+        <span>{phase === "show" ? "Watch" : phase === "input" ? "Repeat" : "Broken"}</span>
       </div>
     </div>
   );
 };
 
-/* ---------------- Speed Reasoning ---------------- */
-const speedQs = [
-  { q: "Which is heavier?", choices: ["1kg of feathers", "1kg of iron", "Same", "Depends"], a: 2 },
-  { q: "Pick the odd one out", choices: ["Cat", "Dog", "Banana", "Lion"], a: 2 },
-  { q: "5 + 3 × 2 = ?", choices: ["16", "11", "13", "10"], a: 1 },
-  { q: "Opposite of 'expand'?", choices: ["Grow", "Stretch", "Shrink", "Build"], a: 2 },
-  { q: "If A>B and B>C, then…", choices: ["C>A", "A>C", "A=C", "Unknown"], a: 1 },
+const levels: ZzleLevel[] = [
+  {
+    title: "Level 1",
+    color: "primary",
+    path: [
+      { r: 8, c: 2 }, { r: 8, c: 3 }, { r: 7, c: 3 }, { r: 7, c: 4 }, { r: 6, c: 4 },
+      { r: 6, c: 5 }, { r: 5, c: 5 }, { r: 5, c: 6 }, { r: 4, c: 6 }, { r: 4, c: 7 },
+      { r: 3, c: 7 }, { r: 3, c: 8 }, { r: 2, c: 8 }, { r: 2, c: 9 },
+    ],
+    decoys: [{ r: 6, c: 6 }, { r: 7, c: 5 }, { r: 5, c: 7 }, { r: 3, c: 6 }],
+  },
+  {
+    title: "Level 2",
+    color: "secondary",
+    path: [
+      { r: 2, c: 3 }, { r: 3, c: 3 }, { r: 3, c: 4 }, { r: 4, c: 4 }, { r: 4, c: 5 },
+      { r: 5, c: 5 }, { r: 5, c: 6 }, { r: 6, c: 6 }, { r: 6, c: 7 }, { r: 7, c: 7 },
+      { r: 8, c: 7 }, { r: 8, c: 6 }, { r: 9, c: 6 }, { r: 9, c: 5 }, { r: 10, c: 5 },
+    ],
+    decoys: [{ r: 5, c: 7 }, { r: 6, c: 8 }, { r: 7, c: 8 }, { r: 8, c: 5 }, { r: 9, c: 7 }],
+  },
+  {
+    title: "Level 3",
+    color: "accent",
+    path: [
+      { r: 9, c: 2 }, { r: 8, c: 2 }, { r: 8, c: 3 }, { r: 7, c: 3 }, { r: 7, c: 4 },
+      { r: 6, c: 4 }, { r: 6, c: 5 }, { r: 5, c: 5 }, { r: 5, c: 6 }, { r: 4, c: 6 },
+      { r: 4, c: 7 }, { r: 3, c: 7 }, { r: 3, c: 8 }, { r: 4, c: 8 }, { r: 5, c: 8 },
+      { r: 5, c: 9 }, { r: 6, c: 9 }, { r: 7, c: 9 }, { r: 7, c: 10 },
+    ],
+    decoys: [{ r: 4, c: 5 }, { r: 5, c: 7 }, { r: 6, c: 8 }, { r: 8, c: 9 }, { r: 9, c: 10 }, { r: 6, c: 10 }],
+  },
 ];
 
-const SpeedReasoning = ({ onComplete }: { onComplete: (score: number) => void }) => {
-  const [i, setI] = useState(0);
-  const [score, setScore] = useState(0);
-  const [time, setTime] = useState(8);
+const zzleProfiles = {
+  standard: { visiblePreview: 5, wrongPenalty: 2 },
+  hard: { visiblePreview: 2, wrongPenalty: 4 },
+  boss: { visiblePreview: 0, wrongPenalty: 6 },
+};
 
-  const current = speedQs[i];
+const ZzleGame = ({ settings, onComplete }: { settings: ReturnType<typeof getGameSettings>; onComplete: (score: number) => void }) => {
+  const profile = zzleProfiles[settings.difficulty];
+  const [levelIndex, setLevelIndex] = useState(0);
+  const [placed, setPlaced] = useState<Point[]>([]);
+  const [failures, setFailures] = useState(0);
+  const [score, setScore] = useState(0);
+  const [timeLeft, setTimeLeft] = useState(settings.zzleSeconds);
+  const level = levels[levelIndex];
+  const start = level.path[0];
+  const end = level.path[level.path.length - 1];
+
+  useEffect(() => setPlaced([]), [levelIndex]);
 
   useEffect(() => {
-    if (time <= 0) {
-      next(false);
+    if (timeLeft <= 0) {
+      onComplete(Math.min(100, score));
       return;
     }
-    const t = setTimeout(() => setTime((t) => t - 1), 1000);
-    return () => clearTimeout(t);
-  }, [time]);
 
-  const next = (right: boolean) => {
-    const newScore = score + (right ? 20 : 0);
-    setScore(newScore);
-    if (i + 1 >= speedQs.length) onComplete(newScore);
-    else { setI((x) => x + 1); setTime(8); }
+    const timer = window.setTimeout(() => setTimeLeft((seconds) => seconds - 1), 1000);
+    return () => window.clearTimeout(timer);
+  }, [onComplete, score, timeLeft]);
+
+  const expected = level.path[placed.length];
+  const solved = placed.length === level.path.length;
+
+  useEffect(() => {
+    if (!solved) return;
+    const earned = Math.max(12, 42 - failures * profile.wrongPenalty - levelIndex * 3);
+    const nextScore = Math.min(100, score + earned);
+    const timer = window.setTimeout(() => {
+      setScore(nextScore);
+      if (levelIndex + 1 >= levels.length) onComplete(nextScore);
+      else setLevelIndex((value) => value + 1);
+    }, 700);
+
+    return () => window.clearTimeout(timer);
+  }, [failures, levelIndex, onComplete, profile.wrongPenalty, score, solved]);
+
+  const clickCell = (point: Point) => {
+    if (solved) return;
+
+    if (point.r === expected.r && point.c === expected.c) {
+      setPlaced((items) => [...items, point]);
+      return;
+    }
+
+    setFailures((value) => value + 1);
   };
 
-  const pct = (time / 8) * 100;
+  const undo = () => setPlaced((items) => items.slice(0, -1));
+  const reset = () => {
+    setPlaced([]);
+    setFailures((value) => value + 1);
+  };
+
+  const isPlaced = (point: Point) => placed.some((item) => samePoint(item, point));
+  const isTarget = (point: Point) => level.path.some((item) => samePoint(item, point));
+  const isDecoy = (point: Point) => level.decoys.some((item) => samePoint(item, point));
+  const isCandidate = (point: Point) => {
+    const anchor = placed[placed.length - 1] ?? start;
+    if (isPlaced(point)) return false;
+    const distance = Math.abs(point.r - anchor.r) + Math.abs(point.c - anchor.c);
+    return distance === 1;
+  };
+  const tone = toneClass(level.color);
 
   return (
     <div className="animate-fade-up">
-      <GameHeader icon={Timer} title="Speed Reasoning" subtitle={`${i + 1} of ${speedQs.length} · think fast`} score={score} />
-      <div className="glass-panel rounded-2xl p-8 mt-8">
-        <div className="flex items-center justify-between mb-6">
-          <span className="text-xs font-mono uppercase tracking-widest text-muted-foreground">Time left</span>
-          <span className={cn("font-mono text-2xl font-bold tabular-nums", time <= 3 ? "text-destructive" : "text-foreground")}>{time}s</span>
+      <GameHeader title="Game #2 - Zzle" subtitle={`${level.title} / 3`} score={score} time={`Time Left: ${formatGameTime(timeLeft)}`} />
+
+      <div className="mt-8 flex flex-col lg:flex-row items-center justify-center gap-5">
+        <div>
+          <div className="mb-4 text-center text-2xl text-muted-foreground">{level.title}</div>
+          <div className="grid border border-border bg-muted/80" style={{ gridTemplateColumns: `repeat(${BOARD_SIZE}, minmax(0, 1fr))` }}>
+            {Array.from({ length: BOARD_SIZE * BOARD_SIZE }).map((_, index) => {
+              const point = { r: Math.floor(index / BOARD_SIZE), c: index % BOARD_SIZE };
+              const target = isTarget(point);
+              const decoy = isDecoy(point);
+              const placedCell = isPlaced(point);
+              const startCell = samePoint(point, start);
+              const endCell = samePoint(point, end);
+              const candidate = isCandidate(point);
+              const previewCell = !placedCell && level.path
+                .slice(0, Math.min(level.path.length, placed.length + profile.visiblePreview))
+                .some((item) => samePoint(item, point));
+
+              return (
+                <button
+                  key={`${point.r}-${point.c}`}
+                  onClick={() => clickCell(point)}
+                  className={cn(
+                    "h-8 w-8 sm:h-10 sm:w-10 border border-background bg-muted text-xs transition-colors",
+                    target && "bg-card",
+                    candidate && "border-foreground/60",
+                    previewCell && tone.faint,
+                    decoy && "bg-secondary/25",
+                    placedCell && tone.solid,
+                    startCell && "text-foreground",
+                    endCell && "text-foreground"
+                  )}
+                  aria-label={`Zzle row ${point.r + 1} column ${point.c + 1}`}
+                >
+                  {startCell ? "*" : endCell ? "◇" : ""}
+                </button>
+              );
+            })}
+          </div>
         </div>
-        <div className="h-2 bg-muted rounded-full overflow-hidden mb-8">
-          <div className={cn("h-full transition-all duration-1000 linear", time <= 3 ? "bg-destructive" : "bg-gradient-primary")} style={{ width: `${pct}%` }} />
+
+        <div className="flex lg:flex-col gap-3">
+          <button className="h-14 w-14 border border-border grid place-items-center hover:border-primary" onClick={() => solved ? undefined : setFailures((value) => value + 1)} aria-label="Validate route">
+            <Play className="h-7 w-7 fill-foreground" />
+          </button>
+          <button className="h-14 w-14 border border-transparent grid place-items-center hover:border-border" onClick={undo} aria-label="Undo">
+            <CornerUpLeft className="h-7 w-7" />
+          </button>
+          <button className="h-14 w-14 border border-transparent grid place-items-center hover:border-border" onClick={reset} aria-label="Reset">
+            <RotateCcw className="h-7 w-7" />
+          </button>
+          <button className="h-14 w-14 border border-transparent grid place-items-center hover:border-border" onClick={() => setFailures((value) => value + 1)} aria-label="Mark wrong">
+            <X className="h-7 w-7" />
+          </button>
         </div>
-        <h3 className="font-display text-2xl font-bold mb-6 text-center">{current.q}</h3>
-        <div className="grid sm:grid-cols-2 gap-3">
-          {current.choices.map((c, idx) => (
-            <button
-              key={c}
-              onClick={() => next(idx === current.a)}
-              className="h-14 rounded-xl border-2 border-border bg-muted text-left px-5 font-medium hover:border-primary hover:bg-muted/70 transition-all"
-            >
-              {c}
-            </button>
-          ))}
-        </div>
+      </div>
+
+      <div className="mt-5 flex flex-wrap items-center justify-center gap-3 text-xs text-muted-foreground">
+        <span>Tiles: {placed.length} / {level.path.length}</span>
+        <span>Faults: {failures}</span>
+        <span>{profile.visiblePreview ? "Only the next path hints are dimmed" : "Boss mode: no path preview"}</span>
       </div>
     </div>
   );
 };
 
-const GameHeader = ({ icon: Icon, title, subtitle, score }: { icon: any; title: string; subtitle: string; score: number }) => (
-  <div className="flex items-center justify-between">
-    <div className="flex items-center gap-3">
-      <div className="h-11 w-11 rounded-xl grid place-items-center bg-primary/15 text-primary">
-        <Icon className="h-5 w-5" />
-      </div>
-      <div>
-        <h2 className="font-display text-xl font-semibold">{title}</h2>
-        <p className="text-xs text-muted-foreground">{subtitle}</p>
-      </div>
+const GameHeader = ({ title, subtitle, score, time }: { title: string; subtitle: string; score: number; time: string }) => (
+  <div className="max-w-3xl mx-auto">
+    <div className="text-center text-sm text-foreground">{time}</div>
+    <div className="mt-4 h-px bg-border">
+      <div className="h-px w-2/5 bg-foreground" />
     </div>
-    <div className="flex items-center gap-2 px-3 h-10 rounded-lg bg-muted border border-border">
-      <Trophy className="h-4 w-4 text-warning" />
-      <span className="font-mono text-sm font-semibold">{score}</span>
+    <div className="mt-5 flex items-center justify-between gap-4">
+      <div>
+        <p className="text-3xl text-muted-foreground">{subtitle}</p>
+        <h1 className="mt-2 text-4xl lg:text-6xl">{title}</h1>
+      </div>
+      <div className="hidden sm:flex items-center gap-2 border border-border bg-muted px-3 h-10 text-sm">
+        <Trophy className="h-4 w-4 text-warning" />
+        <span>{score}</span>
+      </div>
     </div>
   </div>
 );
+
+const samePoint = (a: Point, b: Point) => a.r === b.r && a.c === b.c;
+
+const toneClass = (color: ZzleLevel["color"]) => {
+  const tones = {
+    primary: { faint: "bg-primary/20", solid: "bg-primary text-primary-foreground" },
+    secondary: { faint: "bg-secondary/20", solid: "bg-secondary text-secondary-foreground" },
+    accent: { faint: "bg-accent/20", solid: "bg-accent text-accent-foreground" },
+  };
+
+  return tones[color];
+};
 
 export default GamePlay;

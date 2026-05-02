@@ -49,9 +49,9 @@ export const DashboardLayout = () => {
   }, [location.pathname]);
 
   return (
-    <div className="min-h-screen flex w-full bg-background">
+    <div className="min-h-screen flex w-full bg-background font-mono">
       {/* Sidebar - desktop */}
-      <aside className="hidden lg:flex w-64 flex-col border-r border-sidebar-border bg-sidebar/80 backdrop-blur-xl sticky top-0 h-screen">
+      <aside className="hidden lg:flex w-72 flex-col border-r border-sidebar-border bg-sidebar sticky top-0 h-screen">
         <div className="px-5 py-5 border-b border-sidebar-border">
           <Logo />
         </div>
@@ -61,7 +61,7 @@ export const DashboardLayout = () => {
           ))}
         </nav>
         <div className="p-3 border-t border-sidebar-border">
-          <div className="rounded-xl glass-panel p-3 mb-3">
+          <div className="rounded-sm glass-panel p-3 mb-3">
             <div className="flex items-center gap-2 mb-1">
               <Flame className="h-4 w-4 text-warning" />
               <span className="text-xs font-semibold">7-day streak</span>
@@ -95,7 +95,7 @@ export const DashboardLayout = () => {
 
       <div className="flex-1 flex flex-col min-w-0">
         {/* Top bar */}
-        <header className="sticky top-0 z-40 border-b border-border bg-background/70 backdrop-blur-xl">
+        <header className="sticky top-0 z-40 border-b border-border bg-background">
           <div className="flex items-center gap-3 px-4 lg:px-8 h-16">
             <Button variant="ghost" size="icon" className="lg:hidden" onClick={() => setMobileOpen(true)}>
               <Menu className="h-5 w-5" />
@@ -109,18 +109,18 @@ export const DashboardLayout = () => {
                 <input
                   type="text"
                   placeholder="Search quests, repos, students…"
-                  className="w-full h-10 rounded-lg bg-muted border border-border pl-9 pr-4 text-sm placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring"
+                  className="w-full h-10 rounded-sm bg-muted border border-border pl-9 pr-4 text-sm placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-ring"
                 />
               </div>
             </div>
             <div className="flex-1 md:hidden" />
             <div className="flex items-center gap-2">
-              <div className="hidden sm:flex items-center gap-2 px-3 h-10 rounded-lg bg-muted border border-border">
+              <div className="hidden sm:flex items-center gap-2 px-3 h-10 rounded-sm bg-muted border border-border">
                 <Sparkles className="h-4 w-4 text-secondary" />
                 <span className="font-mono text-sm font-semibold">2,480</span>
                 <span className="text-xs text-muted-foreground">XP</span>
               </div>
-              <div className="hidden md:flex items-center gap-1.5 px-3 h-10 rounded-lg bg-muted border border-border">
+              <div className="hidden md:flex items-center gap-1.5 px-3 h-10 rounded-sm bg-muted border border-border">
                 <Crown className="h-4 w-4 text-warning" />
                 <span className="font-mono text-sm font-semibold">#13</span>
               </div>
@@ -128,7 +128,7 @@ export const DashboardLayout = () => {
                 <Bell className="h-5 w-5" />
                 <span className="absolute top-2 right-2 h-2 w-2 rounded-full bg-destructive" />
               </Button>
-              <div className="h-9 w-9 rounded-full bg-gradient-primary grid place-items-center text-sm font-semibold text-primary-foreground">
+              <div className="h-9 w-9 rounded-full bg-muted border border-border grid place-items-center text-sm font-semibold text-foreground">
                 AO
               </div>
             </div>
@@ -149,9 +149,9 @@ const SidebarLink = ({ to, label, icon: Icon }: { to: string; label: string; ico
     end={to === "/dashboard"}
     className={({ isActive }) =>
       cn(
-        "flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all",
+        "flex items-center gap-3 px-3 py-2.5 rounded-sm text-sm font-normal transition-all",
         isActive
-          ? "bg-gradient-primary text-primary-foreground shadow-[0_8px_24px_-8px_hsl(var(--primary)/0.6)]"
+          ? "bg-muted text-primary border border-primary/60"
           : "text-sidebar-foreground hover:bg-sidebar-accent hover:text-foreground"
       )
     }

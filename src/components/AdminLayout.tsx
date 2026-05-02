@@ -15,6 +15,7 @@ import {
   X,
   LogOut,
   Activity,
+  Gamepad2,
 } from "lucide-react";
 import { Logo } from "./Logo";
 import { Button } from "@/components/ui/button";
@@ -25,6 +26,7 @@ const nav = [
   { to: "/admin/applications", label: "Entry Gate", icon: ClipboardCheck },
   { to: "/admin/students", label: "User Intel", icon: Users },
   { to: "/admin/curriculum", label: "Curriculum Studio", icon: BookOpen },
+  { to: "/admin/game-control", label: "Game Control", icon: Gamepad2 },
   { to: "/admin/code", label: "Activity Monitor", icon: Code2 },
   { to: "/admin/moderation", label: "Enforcement", icon: ShieldAlert },
   { to: "/admin/audit", label: "Audit Trail", icon: ScrollText },
@@ -38,8 +40,8 @@ export const AdminLayout = () => {
   useEffect(() => setMobileOpen(false), [location.pathname]);
 
   return (
-    <div className="min-h-screen flex w-full bg-background">
-      <aside className="hidden lg:flex w-64 flex-col border-r border-sidebar-border bg-sidebar/80 backdrop-blur-xl sticky top-0 h-screen">
+    <div className="min-h-screen flex w-full bg-background font-mono">
+      <aside className="hidden lg:flex w-72 flex-col border-r border-sidebar-border bg-sidebar sticky top-0 h-screen">
         <div className="px-5 py-5 border-b border-sidebar-border">
           <div className="flex items-center justify-between">
             <Logo />
@@ -52,7 +54,7 @@ export const AdminLayout = () => {
           {nav.map((item) => <SidebarLink key={item.to} {...item} />)}
         </nav>
         <div className="p-3 border-t border-sidebar-border">
-          <div className="rounded-xl glass-panel p-3 mb-3">
+          <div className="rounded-sm glass-panel p-3 mb-3">
             <div className="flex items-center gap-2 mb-1">
               <Activity className="h-4 w-4 text-accent" />
               <span className="text-xs font-semibold">System healthy</span>
@@ -82,7 +84,7 @@ export const AdminLayout = () => {
       )}
 
       <div className="flex-1 flex flex-col min-w-0">
-        <header className="sticky top-0 z-40 border-b border-border bg-background/70 backdrop-blur-xl">
+        <header className="sticky top-0 z-40 border-b border-border bg-background">
           <div className="flex items-center gap-3 px-4 lg:px-8 h-16">
             <Button variant="ghost" size="icon" className="lg:hidden" onClick={() => setMobileOpen(true)}>
               <Menu className="h-5 w-5" />
@@ -94,13 +96,13 @@ export const AdminLayout = () => {
                 <input
                   type="text"
                   placeholder="Search students, repos, applications…"
-                  className="w-full h-10 rounded-lg bg-muted border border-border pl-9 pr-4 text-sm placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring"
+                  className="w-full h-10 rounded-sm bg-muted border border-border pl-9 pr-4 text-sm placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-ring"
                 />
               </div>
             </div>
             <div className="flex-1 md:hidden" />
             <div className="flex items-center gap-2">
-              <div className="hidden sm:flex items-center gap-2 px-3 h-10 rounded-lg bg-muted border border-border">
+              <div className="hidden sm:flex items-center gap-2 px-3 h-10 rounded-sm bg-muted border border-border">
                 <span className="h-2 w-2 rounded-full bg-accent animate-pulse" />
                 <span className="text-xs text-muted-foreground">Live</span>
               </div>
@@ -108,7 +110,7 @@ export const AdminLayout = () => {
                 <Bell className="h-5 w-5" />
                 <span className="absolute top-2 right-2 h-2 w-2 rounded-full bg-destructive" />
               </Button>
-              <div className="h-9 w-9 rounded-full bg-gradient-primary grid place-items-center text-sm font-semibold text-primary-foreground">
+              <div className="h-9 w-9 rounded-full bg-muted border border-border grid place-items-center text-sm font-semibold text-foreground">
                 SA
               </div>
             </div>
@@ -129,9 +131,9 @@ const SidebarLink = ({ to, label, icon: Icon }: { to: string; label: string; ico
     end={to === "/admin"}
     className={({ isActive }) =>
       cn(
-        "flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all",
+        "flex items-center gap-3 px-3 py-2.5 rounded-sm text-sm font-normal transition-all",
         isActive
-          ? "bg-gradient-primary text-primary-foreground shadow-[0_8px_24px_-8px_hsl(var(--primary)/0.6)]"
+          ? "bg-muted text-primary border border-primary/60"
           : "text-sidebar-foreground hover:bg-sidebar-accent hover:text-foreground"
       )
     }

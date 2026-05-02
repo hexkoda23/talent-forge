@@ -1,5 +1,5 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -34,8 +34,19 @@ import AdminCurriculumStudio from "./pages/admin/CurriculumStudio.tsx";
 import AdminModeration from "./pages/admin/Moderation.tsx";
 import AdminAuditLog from "./pages/admin/AuditLog.tsx";
 import AdminRoles from "./pages/admin/Roles.tsx";
+import AdminGameControl from "./pages/admin/GameControl.tsx";
+import { getCompletedAttempts, MAX_GAME_ATTEMPTS } from "./lib/gameSettings.ts";
 
 const queryClient = new QueryClient();
+
+const RegisteredGameRoute = () => {
+  const registered = window.localStorage.getItem("talentNationGameRegistered") === "true";
+  const attemptsFinished = getCompletedAttempts() >= MAX_GAME_ATTEMPTS;
+
+  if (!registered) return <Navigate to="/register" replace />;
+  if (attemptsFinished) return <Navigate to="/status?state=review" replace />;
+  return <GamePlay />;
+};
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
@@ -47,7 +58,7 @@ const App = () => (
           <Route path="/" element={<Index />} />
           <Route path="/register" element={<Register />} />
           <Route path="/assessment" element={<Assessment />} />
-          <Route path="/assessment/play" element={<GamePlay />} />
+          <Route path="/assessment/play" element={<RegisteredGameRoute />} />
           <Route path="/assessment/result" element={<Result />} />
           <Route path="/status" element={<Status />} />
           <Route path="/onboarding" element={<Onboarding />} />
@@ -71,6 +82,7 @@ const App = () => (
             <Route path="applications" element={<AdminApplications />} />
             <Route path="students" element={<AdminStudents />} />
             <Route path="curriculum" element={<AdminCurriculumStudio />} />
+            <Route path="game-control" element={<AdminGameControl />} />
             <Route path="code" element={<AdminCodeMonitor />} />
             <Route path="moderation" element={<AdminModeration />} />
             <Route path="audit" element={<AdminAuditLog />} />

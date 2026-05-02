@@ -1,246 +1,140 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { ArrowRight, Brain, Code2, GitBranch, Trophy, Sparkles, Cpu, Network, ShieldCheck, Gamepad2, Calendar, Users, ClipboardCheck, GraduationCap, Clock, X } from "lucide-react";
+import { ArrowRight, Calendar, Code2, Gamepad2, GraduationCap, ShieldCheck, Users, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Logo } from "@/components/Logo";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
-import heroImage from "@/assets/hero-ai.jpg";
 
 const Landing = () => {
   const [learnOpen, setLearnOpen] = useState(false);
 
   return (
-    <div className="min-h-screen relative overflow-hidden">
-      {/* Nav */}
-      <header className="relative z-20 px-5 lg:px-10 py-5 flex items-center justify-between max-w-7xl mx-auto">
+    <div className="min-h-screen relative overflow-hidden bg-background font-mono">
+      <header className="relative z-20 px-5 lg:px-10 py-5 flex items-center justify-between border-b border-border">
         <Logo />
         <nav className="hidden md:flex items-center gap-8 text-sm text-muted-foreground">
           <a href="#program" className="hover:text-foreground transition-colors">Program</a>
-          <a href="#how" className="hover:text-foreground transition-colors">How it works</a>
+          <a href="#how" className="hover:text-foreground transition-colors">Trail</a>
           <a href="#tracks" className="hover:text-foreground transition-colors">Tracks</a>
-          <a href="#faq" className="hover:text-foreground transition-colors">FAQ</a>
         </nav>
-        <div className="flex items-center gap-2">
-          <Link to="/register">
-            <Button variant="hero" size="sm" className="gap-1.5">
-              <Gamepad2 className="h-4 w-4" /> Play game
-            </Button>
-          </Link>
-        </div>
+        <Link to="/register">
+          <Button variant="hero" size="sm" className="gap-1.5">
+            <Gamepad2 className="h-4 w-4" /> Register for game
+          </Button>
+        </Link>
       </header>
 
-      {/* Hero */}
-      <section className="relative z-10 px-5 lg:px-10 pt-10 lg:pt-20 pb-24 max-w-7xl mx-auto">
-        <div className="grid lg:grid-cols-2 gap-12 items-center">
-          <div className="animate-fade-up">
-            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full glass-panel text-xs font-medium mb-6">
-              <span className="h-1.5 w-1.5 rounded-full bg-accent animate-pulse" />
-              Cohort 03 · 3 / 4 / 6-month tracks open
-            </div>
-            <h1 className="font-display text-5xl sm:text-6xl lg:text-7xl font-bold leading-[1.05] tracking-tight">
-              Nigeria's <span className="text-gradient">AI Engineering</span> SIWES Program
-            </h1>
-            <p className="mt-6 text-lg text-muted-foreground max-w-xl leading-relaxed">
-              Train like a real engineer. Build production AI. Get paid SIWES experience that
-              actually moves your career — gamified, mentored, and merit-based.
-            </p>
-            <div className="mt-8 flex flex-wrap items-center gap-3">
-              <Link to="/register">
-                <Button variant="hero" size="xl" className="gap-2">
-                  <Gamepad2 className="h-5 w-5" /> Play game
-                </Button>
-              </Link>
-              <Button variant="soft" size="xl" onClick={() => setLearnOpen(true)}>
-                Learn more
-              </Button>
-            </div>
-            <div className="mt-10 flex flex-wrap items-center gap-x-8 gap-y-3 text-sm text-muted-foreground">
-              <Stat value="40+" label="Partner schools" />
-              <Stat value="1,200+" label="Active students" />
-              <Stat value="₦∞" label="Career impact" />
-            </div>
-          </div>
-
-          <div className="relative animate-fade-in">
-            <div className="absolute -inset-6 bg-gradient-primary opacity-20 blur-3xl rounded-full" />
-            <div className="relative rounded-3xl overflow-hidden border border-border glow-primary">
-              <img
-                src={heroImage}
-                alt="AI neural network visualization"
-                width={1536}
-                height={1024}
-                className="w-full h-auto"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-background via-background/30 to-transparent" />
-              <div className="absolute bottom-5 left-5 right-5 flex flex-wrap gap-2">
-                <FloatingTag icon={<Cpu className="h-3.5 w-3.5" />}>LLM Engineering</FloatingTag>
-                <FloatingTag icon={<Network className="h-3.5 w-3.5" />}>MLOps</FloatingTag>
-                <FloatingTag icon={<ShieldCheck className="h-3.5 w-3.5" />}>AI Safety</FloatingTag>
-              </div>
-            </div>
-            <div className="absolute -bottom-4 -right-4 hidden sm:block animate-float">
-              <div className="glass-panel rounded-2xl p-4 w-48">
-                <div className="flex items-center gap-2 mb-2">
-                  <div className="h-2 w-2 rounded-full bg-accent" />
-                  <span className="text-xs font-mono text-muted-foreground">live</span>
-                </div>
-                <p className="text-sm font-medium">237 students cleared Raid #04</p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Pillars */}
-      <section id="program" className="relative z-10 px-5 lg:px-10 py-20 max-w-7xl mx-auto">
-        <div className="text-center max-w-2xl mx-auto mb-14">
-          <p className="text-sm font-mono uppercase tracking-widest text-secondary mb-3">// the program</p>
-          <h2 className="font-display text-4xl lg:text-5xl font-bold">SIWES, but built like the future</h2>
-          <p className="text-muted-foreground mt-4">
-            Three tracks. One mission: turn Nigerian students into world-class AI engineers.
+      <main className="relative z-10 px-5 lg:px-10 py-14 lg:py-24 max-w-7xl mx-auto">
+        <section className="min-h-[68vh] grid content-center">
+          <p className="text-sm text-primary mb-8">01 - Online Cognitive Games</p>
+          <h1 className="text-5xl sm:text-7xl lg:text-8xl leading-[1.08] max-w-6xl">
+            Talent Nation<br />AI Engineering SIWES
+          </h1>
+          <p className="mt-8 text-base lg:text-lg text-foreground max-w-3xl leading-8">
+            Register first. Wait for the shared assessment window. Then complete a private
+            screening session before admin verification and cohort placement.
           </p>
-        </div>
-        <div className="grid md:grid-cols-3 gap-5">
-          <Pillar
-            icon={Brain}
-            title="Cognitive Assessment"
-            text="Prove you have the wiring. Memory, logic, and speed reasoning — auto-graded by our system."
-            tone="primary"
-          />
-          <Pillar
-            icon={Trophy}
-            title="Gamified Curriculum"
-            text="Admin-set quests, raids, and checkpoint gates. Level up like an RPG, ship like a senior engineer."
-            tone="violet"
-          />
-          <Pillar
-            icon={GitBranch}
-            title="Built-in Workspace"
-            text="A GitHub-style workspace with reviews, commits, and feedback baked in. Push your work."
-            tone="accent"
-          />
-        </div>
-      </section>
-
-      {/* Duration tracks */}
-      <section id="tracks" className="relative z-10 px-5 lg:px-10 py-10 max-w-7xl mx-auto">
-        <div className="text-center max-w-2xl mx-auto mb-10">
-          <p className="text-sm font-mono uppercase tracking-widest text-secondary mb-3">// pick your duration</p>
-          <h2 className="font-display text-3xl lg:text-4xl font-bold">3, 4 or 6 months</h2>
-          <p className="text-muted-foreground mt-3">Match your SIWES window. Same intensity. Same standards.</p>
-        </div>
-        <div className="grid md:grid-cols-3 gap-5">
-          <DurationCard months="3" label="Sprint" desc="Intensive, focused. For the already-strong who want to compress." />
-          <DurationCard months="4" label="Standard" desc="The balanced path. Most students finish here with a portfolio." highlight />
-          <DurationCard months="6" label="Deep dive" desc="Full immersion. More raids, more depth, more shipped projects." />
-        </div>
-      </section>
-
-      {/* How it works */}
-      <section id="how" className="relative z-10 px-5 lg:px-10 py-20 max-w-7xl mx-auto">
-        <div className="grid lg:grid-cols-[1fr,2fr] gap-10 items-start">
-          <div>
-            <p className="text-sm font-mono uppercase tracking-widest text-secondary mb-3">// how it works</p>
-            <h2 className="font-display text-4xl lg:text-5xl font-bold">From application to AI engineer</h2>
-            <p className="text-muted-foreground mt-4">
-              Every step is designed to filter for talent — and grow it. No shortcuts, no gatekeeping.
-            </p>
+          <div className="mt-8 flex flex-wrap items-center gap-3">
+            <Link to="/register">
+              <Button variant="hero" size="xl" className="gap-2">
+                <Gamepad2 className="h-5 w-5" /> Register for game
+              </Button>
+            </Link>
+            <Button variant="soft" size="xl" onClick={() => setLearnOpen(true)}>
+              Learn more
+            </Button>
           </div>
-          <ol className="space-y-3">
-            {steps.map((s, i) => (
-              <li key={s.title} className="glass-panel rounded-2xl p-5 flex gap-5 hover:border-primary/40 transition-colors">
-                <div className="font-display text-3xl font-bold text-gradient w-10">0{i + 1}</div>
-                <div>
-                  <h3 className="font-display text-lg font-semibold">{s.title}</h3>
-                  <p className="text-sm text-muted-foreground mt-1">{s.text}</p>
-                </div>
-              </li>
-            ))}
-          </ol>
-        </div>
-      </section>
+        </section>
 
-      {/* CTA */}
-      <section className="relative z-10 px-5 lg:px-10 py-20 max-w-5xl mx-auto">
-        <div className="relative rounded-3xl overflow-hidden glass-panel p-10 lg:p-16 text-center">
-          <div className="absolute inset-0 bg-gradient-aurora opacity-60" />
-          <div className="relative">
-            <Sparkles className="h-8 w-8 text-secondary mx-auto mb-5" />
-            <h2 className="font-display text-3xl lg:text-5xl font-bold leading-tight">
-              Ready to become an <br className="hidden sm:block" /><span className="text-gradient">AI Engineer</span>?
-            </h2>
-            <p className="text-muted-foreground mt-5 max-w-xl mx-auto">
-              Applications close in 14 days. Play the qualifying game and start your journey.
-            </p>
-            <div className="mt-8">
-              <Link to="/assessment">
-                <Button variant="hero" size="xl" className="gap-2">
-                  <Gamepad2 className="h-5 w-5" /> Complete verification <ArrowRight className="h-5 w-5" />
-                </Button>
-              </Link>
+        <section id="program" className="py-16 border-t border-border">
+          <div className="grid lg:grid-cols-[0.7fr,1.3fr] gap-10">
+            <div>
+              <p className="text-sm text-primary mb-3">// program</p>
+              <h2 className="text-4xl lg:text-5xl leading-tight">Built for serious selection</h2>
+            </div>
+            <div className="grid md:grid-cols-3 gap-4">
+              <Panel icon={ShieldCheck} title="Private screening" text="Applicants complete a timed assessment only after registration opens." />
+              <Panel icon={GraduationCap} title="Cohort placement" text="Qualified students are matched to their SIWES duration and learning track." />
+              <Panel icon={Code2} title="Project readiness" text="The program filters for students ready to build, review, and ship real work." />
             </div>
           </div>
-        </div>
-      </section>
+        </section>
 
-      <footer className="relative z-10 border-t border-border px-5 lg:px-10 py-8 max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-4 text-sm text-muted-foreground">
+        <section id="tracks" className="py-16 border-t border-border">
+          <p className="text-sm text-primary mb-8">// choose your campus track</p>
+          <div className="grid md:grid-cols-3 gap-6">
+            <Track months="3" label="Sprint" />
+            <Track months="4" label="Standard" />
+            <Track months="6" label="Deep dive" />
+          </div>
+        </section>
+
+        <section id="how" className="py-16 border-t border-border">
+          <div className="relative pl-10">
+            <div className="absolute left-2 top-2 bottom-2 w-px bg-border" />
+            <div className="absolute left-0 top-2 h-5 w-5 rounded-full border-2 border-primary bg-background" />
+            <h2 className="text-4xl lg:text-5xl mb-10">From registration to dashboard</h2>
+            <div className="space-y-8">
+              {steps.map((step, index) => (
+                <div key={step.title} className="grid md:grid-cols-[120px,1fr] gap-4 border-b border-border pb-8">
+                  <span className="text-3xl text-muted-foreground">0{index + 1}</span>
+                  <div>
+                    <h3 className="text-xl">{step.title}</h3>
+                    <p className="text-sm text-muted-foreground mt-2 max-w-3xl">{step.text}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        <section className="py-16 border-t border-border">
+          <div className="grid lg:grid-cols-[1fr,auto] gap-6 items-center">
+            <div>
+              <h2 className="text-4xl lg:text-5xl">Ready to enter the trail?</h2>
+              <p className="text-muted-foreground mt-4 max-w-xl">
+                Applications close in 14 days. Register for the qualifying game and start your journey.
+              </p>
+            </div>
+            <Link to="/register">
+              <Button variant="hero" size="xl" className="gap-2">
+                <Gamepad2 className="h-5 w-5" /> Register for game <ArrowRight className="h-5 w-5" />
+              </Button>
+            </Link>
+          </div>
+        </section>
+      </main>
+
+      <footer className="relative z-10 border-t border-border px-5 lg:px-10 py-8 flex flex-wrap items-center justify-between gap-4 text-sm text-muted-foreground">
         <Logo size="sm" />
-        <p>© {new Date().getFullYear()} Talent Nation. Built for Nigerian engineers.</p>
+        <p>(c) {new Date().getFullYear()} Talent Nation. Built for Nigerian engineers.</p>
       </footer>
 
-      {/* Learn more dialog */}
       <Dialog open={learnOpen} onOpenChange={setLearnOpen}>
         <DialogContent className="max-w-3xl max-h-[85vh] overflow-y-auto glass-panel">
           <DialogHeader>
-            <DialogTitle className="font-display text-2xl lg:text-3xl">How Talent Nation works — the full story</DialogTitle>
+            <DialogTitle className="text-2xl lg:text-3xl">How Talent Nation works</DialogTitle>
             <DialogDescription>
-              An end-to-end walkthrough of the program, from your first click to your final certificate.
+              A compact walkthrough of the demo flow and the real platform journey.
             </DialogDescription>
           </DialogHeader>
 
           <div className="space-y-6 mt-2 text-sm leading-relaxed">
-            <Section icon={Gamepad2} title="1. Qualify by playing">
-              Talent Nation doesn't care about CVs. You qualify by playing three short cognitive games — memory grid,
-              logic puzzle and speed reasoning. The system auto-grades your performance instantly. High scorers are
-              flagged as game-qualified. Every applicant still goes through admin identity verification before admission.
+            <Section icon={Gamepad2} title="1. Register for game day">
+              Every applicant registers first. The live platform can hold everyone on a countdown page
+              until the official start time.
             </Section>
-
-            <Section icon={GraduationCap} title="2. Pick your SIWES duration">
-              Choose <b>3 months</b> (sprint), <b>4 months</b> (standard) or <b>6 months</b> (deep dive). The track length
-              adjusts the curriculum depth, raid intensity, and checkpoint count for the selected SIWES window.
+            <Section icon={ShieldCheck} title="2. Complete the private assessment">
+              The assessment is timed and confidential. Applicants only see the details when the official window opens.
             </Section>
-
-            <Section icon={Calendar} title="3. Quests — admin-set challenges">
-              Quests are attached to curriculum modules. Admins set each quest's deadline, cooldown, attempts, XP reward,
-              and submission rules. Submit on time → earn XP. Miss the deadline → the configured penalty applies.
+            <Section icon={Calendar} title="3. Pick your SIWES duration">
+              Choose 3, 4, or 6 months to match your school window.
             </Section>
-
-            <Section icon={Users} title="4. Weekly Raids — auto-grouped teams of 3">
-              Every week, the system <b>randomly groups you with 2 other students</b> into a Raid team. Together you ship a
-              real project (multi-agent bot, fine-tune, evaluator, etc.) within 7 days. New random team every week — you
-              learn to collaborate with anyone, not just your friends.
+            <Section icon={Code2} title="4. Build in the workspace">
+              Accepted students use a GitHub-style workspace with quests, raids, audits, and checkpoints.
             </Section>
-
-            <Section icon={ClipboardCheck} title="5. Peer Audits — students grade students">
-              After each quest, the system assigns you 2–3 of <b>other students' submissions</b> to audit and score. You
-              earn audit XP for thorough, fair reviews. Submissions are double-checked against AI grading and human
-              campus admins — fake audits get flagged and penalized.
-            </Section>
-
-            <Section icon={Brain} title="6. Checkpoint Gates">
-              Checkpoints are curriculum boundary assessments. Admins decide when they open, what course or subject they
-              cover, the duration, attempt rules, and the score required to continue.
-            </Section>
-
-            <Section icon={Code2} title="7. Built-in Workspace">
-              All your code lives in the Talent Nation Workspace — a GitHub-style environment with repos, commits, file
-              explorer and inline review. Mentors and auditors can comment directly on your code.
-            </Section>
-
-            <Section icon={Trophy} title="8. Level up & graduate">
-              XP from quests, raids and audits powers your level. Climb the leaderboard, earn badges, and at the end of
-              your 3/4/6 months you graduate with a verifiable certificate, a public portfolio, and your SIWES letter
-              signed off.
+            <Section icon={Users} title="5. Graduate with evidence">
+              Students leave with certificates, portfolio work, and SIWES documentation.
             </Section>
           </div>
 
@@ -250,7 +144,7 @@ const Landing = () => {
             </Button>
             <Link to="/register" onClick={() => setLearnOpen(false)}>
               <Button variant="hero" className="gap-2">
-                <Gamepad2 className="h-4 w-4" /> Play the game
+                <Gamepad2 className="h-4 w-4" /> Register for game
               </Button>
             </Link>
           </div>
@@ -260,80 +154,42 @@ const Landing = () => {
   );
 };
 
+const Panel = ({ icon: Icon, title, text }: { icon: any; title: string; text: string }) => (
+  <div className="glass-panel p-5">
+    <Icon className="h-6 w-6 text-primary mb-5" />
+    <h3 className="text-xl mb-2">{title}</h3>
+    <p className="text-sm text-muted-foreground leading-6">{text}</p>
+  </div>
+);
+
+const Track = ({ months, label }: { months: string; label: string }) => (
+  <div className="glass-panel p-6 min-h-48 flex flex-col justify-between">
+    <p className="text-muted-foreground">Campus</p>
+    <div>
+      <div className="h-px bg-border mb-5" />
+      <p className="text-secondary text-2xl">{months} months</p>
+      <p className="text-muted-foreground mt-2">{label}</p>
+    </div>
+  </div>
+);
+
 const Section = ({ icon: Icon, title, children }: { icon: any; title: string; children: React.ReactNode }) => (
   <div className="flex gap-4">
-    <div className="h-10 w-10 rounded-lg bg-primary/15 text-primary grid place-items-center flex-shrink-0">
+    <div className="h-10 w-10 bg-muted border border-border text-primary grid place-items-center flex-shrink-0">
       <Icon className="h-5 w-5" />
     </div>
     <div>
-      <h3 className="font-display text-lg font-semibold mb-1">{title}</h3>
+      <h3 className="text-lg mb-1">{title}</h3>
       <p className="text-muted-foreground">{children}</p>
     </div>
   </div>
 );
 
-const Stat = ({ value, label }: { value: string; label: string }) => (
-  <div className="flex items-baseline gap-2">
-    <span className="font-display text-2xl font-bold text-foreground">{value}</span>
-    <span>{label}</span>
-  </div>
-);
-
-const FloatingTag = ({ icon, children }: { icon: React.ReactNode; children: React.ReactNode }) => (
-  <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-background/70 backdrop-blur border border-border text-xs font-medium">
-    {icon}
-    {children}
-  </span>
-);
-
-const DurationCard = ({ months, label, desc, highlight }: { months: string; label: string; desc: string; highlight?: boolean }) => (
-  <div className={`glass-panel rounded-2xl p-6 transition-all hover:-translate-y-1 ${highlight ? "border-primary/60 shadow-[0_10px_40px_-10px_hsl(var(--primary)/0.5)]" : "hover:border-primary/40"}`}>
-    <div className="flex items-center gap-2 mb-3">
-      <Clock className="h-4 w-4 text-secondary" />
-      <span className="text-xs font-mono uppercase tracking-widest text-muted-foreground">{label}</span>
-    </div>
-    <div className="flex items-baseline gap-2 mb-3">
-      <span className="font-display text-5xl font-bold text-gradient">{months}</span>
-      <span className="text-muted-foreground">months</span>
-    </div>
-    <p className="text-sm text-muted-foreground">{desc}</p>
-  </div>
-);
-
-const Pillar = ({
-  icon: Icon,
-  title,
-  text,
-  tone,
-}: {
-  icon: any;
-  title: string;
-  text: string;
-  tone: "primary" | "violet" | "accent";
-}) => {
-  const tones = {
-    primary: "bg-primary/15 text-primary",
-    violet: "bg-secondary/15 text-secondary",
-    accent: "bg-accent/15 text-accent",
-  };
-  return (
-    <div className="glass-panel rounded-2xl p-6 hover:border-primary/40 transition-all hover:-translate-y-1 group">
-      <div className={`h-12 w-12 rounded-xl grid place-items-center mb-5 ${tones[tone]}`}>
-        <Icon className="h-6 w-6" />
-      </div>
-      <h3 className="font-display text-xl font-semibold mb-2">{title}</h3>
-      <p className="text-muted-foreground text-sm leading-relaxed">{text}</p>
-    </div>
-  );
-};
-
 const steps = [
-  { title: "Play to qualify", text: "No CV needed. Three cognitive games — memory, logic, speed reasoning. The system grades you instantly." },
-  { title: "Pick your track", text: "Choose 3, 4 or 6 months to match your SIWES window. Same standards, different depth." },
-  { title: "Admin-set quests", text: "Curriculum-attached challenges with deadlines, XP rewards, cooldowns, and attempts controlled by admins." },
-  { title: "Weekly raids", text: "Auto-grouped into random teams of 3 every week. Ship a real project together in 7 days." },
-  { title: "Peer audits & checkpoints", text: "Audit other students' work for XP. Pass checkpoint gates to progress through the curriculum." },
-  { title: "Graduate", text: "Earn your certificate, public portfolio, and signed SIWES letter. Walk out an AI engineer." },
+  { title: "Register for game day", text: "No CV needed. Register first, then wait for the shared game window to open for every applicant." },
+  { title: "Complete private assessment", text: "Applicants are tested inside a timed assessment window without public hints on the landing page." },
+  { title: "Admin verification", text: "Game qualification is attached to identity, NIN, school, and document checks before admission." },
+  { title: "Start the program", text: "Accepted students enter the dashboard for quests, raids, audits, checkpoints, and workspace tasks." },
 ];
 
 export default Landing;

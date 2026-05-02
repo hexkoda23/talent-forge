@@ -1,10 +1,11 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import {
   ArrowLeft,
   ArrowRight,
   Camera,
   Check,
+  Clock,
   FileCheck2,
   Fingerprint,
   GraduationCap,
@@ -22,6 +23,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Logo } from "@/components/Logo";
 import { cn } from "@/lib/utils";
+import { resetCompletedAttempts } from "@/lib/gameSettings";
 
 const steps = [
   { id: 1, title: "Identity", icon: UserIcon },
@@ -31,20 +33,21 @@ const steps = [
 ];
 
 const codeZones = [
-  { city: "Ikeja", state: "Lagos", label: "Lagos (Ikeja)", seats: "42 seats", status: "Recommended" },
-  { city: "Lekki", state: "Lagos", label: "Lagos (Lekki)", seats: "28 seats", status: "High demand" },
-  { city: "Badagry", state: "Lagos", label: "Lagos (Badagry)", seats: "18 seats", status: "Open" },
-  { city: "Ibadan", state: "Oyo State", label: "Ibadan (Oyo State)", seats: "35 seats", status: "Open" },
-  { city: "Abeokuta", state: "Ogun State", label: "Abeokuta (Ogun State)", seats: "24 seats", status: "Open" },
-  { city: "Shagamu", state: "Ogun State", label: "Shagamu (Ogun State)", seats: "16 seats", status: "Open" },
-  { city: "Gwarinpa", state: "Abuja", label: "Abuja (Gwarinpa)", seats: "30 seats", status: "Open" },
-  { city: "Wuse", state: "Abuja", label: "Abuja (Wuse)", seats: "22 seats", status: "Open" },
+  { city: "Ikeja", state: "Lagos", label: "Lagos (Ikeja)" },
+  { city: "Lekki", state: "Lagos", label: "Lagos (Lekki)" },
+  { city: "Badagry", state: "Lagos", label: "Lagos (Badagry)" },
+  { city: "Ibadan", state: "Oyo State", label: "Ibadan (Oyo State)" },
+  { city: "Abeokuta", state: "Ogun State", label: "Abeokuta (Ogun State)" },
+  { city: "Shagamu", state: "Ogun State", label: "Shagamu (Ogun State)" },
+  { city: "Gwarinpa", state: "Abuja", label: "Abuja (Gwarinpa)" },
+  { city: "Wuse", state: "Abuja", label: "Abuja (Wuse)" },
 ];
 
 const Register = () => {
   const navigate = useNavigate();
   const [step, setStep] = useState(1);
   const [submitting, setSubmitting] = useState(false);
+  const [countdown, setCountdown] = useState(3);
   const [data, setData] = useState({
     fullName: "",
     phone: "",
@@ -80,8 +83,57 @@ const Register = () => {
 
   const submit = () => {
     setSubmitting(true);
-    setTimeout(() => navigate("/assessment/play"), 700);
+    setCountdown(3);
   };
+
+  useEffect(() => {
+    if (!submitting) return;
+
+    const timer = window.setInterval(() => {
+      setCountdown((seconds) => {
+        if (seconds <= 1) {
+          window.clearInterval(timer);
+          window.localStorage.setItem("talentNationGameRegistered", "true");
+          resetCompletedAttempts();
+          navigate("/assessment/play");
+          return 0;
+        }
+
+        return seconds - 1;
+      });
+    }, 1000);
+
+    return () => window.clearInterval(timer);
+  }, [navigate, submitting]);
+
+  if (submitting) {
+    return (
+      <div className="min-h-screen flex flex-col">
+        <header className="px-5 lg:px-10 py-5 flex items-center justify-between border-b border-border">
+          <Logo />
+          <Link to="/" className="text-sm text-muted-foreground hover:text-foreground">Back home</Link>
+        </header>
+
+        <main className="flex-1 px-5 py-12 max-w-3xl w-full mx-auto grid place-items-center">
+          <section className="glass-panel rounded-2xl p-8 lg:p-10 text-center w-full animate-fade-up">
+            <div className="h-16 w-16 rounded-2xl bg-primary/15 text-primary grid place-items-center mx-auto mb-6">
+              <Clock className="h-8 w-8" />
+            </div>
+            <p className="text-sm font-mono uppercase tracking-widest text-secondary mb-3">// game window locked</p>
+            <h1 className="font-display text-3xl lg:text-5xl font-bold">Registered. Game opens soon.</h1>
+            <p className="text-muted-foreground mt-4 max-w-xl mx-auto">
+              On the main Talent Nation website, every registered applicant waits here until the same official game day and start time. For this demo, the wait is shortened to a few seconds.
+            </p>
+            <div className="mt-8 inline-flex items-center gap-4 rounded-2xl border border-primary/30 bg-primary/10 px-6 py-4">
+              <Loader2 className="h-5 w-5 animate-spin text-primary" />
+              <span className="text-sm text-muted-foreground">Opening game in</span>
+              <span className="font-display text-4xl font-bold text-gradient tabular-nums">{countdown}</span>
+            </div>
+          </section>
+        </main>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -250,12 +302,6 @@ const Register = () => {
                         </div>
                         {selected && <Check className="h-5 w-5 text-primary shrink-0" />}
                       </div>
-                      <div className="mt-4 flex items-center justify-between text-xs">
-                        <span className="text-muted-foreground">{zone.seats}</span>
-                        <span className={cn("px-2 py-1 rounded border font-mono", zone.status === "Recommended" ? "border-accent/30 bg-accent/15 text-accent" : "border-border bg-background/40 text-muted-foreground")}>
-                          {zone.status}
-                        </span>
-                      </div>
                     </button>
                   );
                 })}
@@ -263,7 +309,7 @@ const Register = () => {
               <div className="rounded-xl border border-primary/30 bg-primary/10 p-4 flex gap-3 text-sm text-muted-foreground">
                 <MapPin className="h-5 w-5 text-primary shrink-0 mt-0.5" />
                 <p>
-                  Your selected Code Zone is attached to your application. For the demo, selecting a zone immediately unlocks the game start button.
+                  Your selected Code Zone is attached to your application. In production, this registration would place you on a shared countdown page until the official game time. For this demo, the countdown lasts 3 seconds before the game opens.
                 </p>
               </div>
             </div>
@@ -279,7 +325,7 @@ const Register = () => {
               </Button>
             ) : (
               <Button variant="hero" size="lg" onClick={submit} disabled={!canContinue || submitting} className="gap-2">
-                {submitting ? <><Loader2 className="h-4 w-4 animate-spin" /> Opening game...</> : <>Open qualifying game <ArrowRight className="h-4 w-4" /></>}
+                Register for game <ArrowRight className="h-4 w-4" />
               </Button>
             )}
           </div>
