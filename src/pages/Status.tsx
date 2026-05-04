@@ -6,6 +6,7 @@ import { Logo } from "@/components/Logo";
 const Status = () => {
   const [params] = useSearchParams();
   const state = params.get("state") ?? "accepted";
+  const correction = params.get("correction") === "1";
 
   const config = {
     accepted: {
@@ -20,8 +21,18 @@ const Status = () => {
       Icon: Clock,
       tone: "warning",
       title: "Awaiting admin confirmation",
-      sub: "Your game score and identity file are now waiting for admin review.",
-      body: "Await email from admin. Even after passing the game cut off, a TalentOS admin must verify your photo, school ID, NIN, phone linkage, and duplicate checks before you enter the platform.",
+      sub: correction ? "Your corrected details are now waiting for admin review." : "Your game score and identity file are now waiting for admin review.",
+      body: correction
+        ? "Your corrections have been submitted. Await email from admin while the new details and documents are verified."
+        : "Await email from admin. Even after passing the game cut off, a TalentOS admin must verify your photo, school ID, NIN, phone linkage, and duplicate checks before you enter the platform.",
+      cta: { label: "Back to home", to: "/" },
+    },
+    failed: {
+      Icon: XCircle,
+      tone: "destructive",
+      title: "Failed",
+      sub: "You did not reach the cut off after three trials.",
+      body: "This application did not auto-pass the assessment stage. You can wait for a future cohort or contact Talent Nation if an admin gives further instructions.",
       cta: { label: "Back to home", to: "/" },
     },
     rejected: {

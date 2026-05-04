@@ -1,11 +1,12 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
+import { BrowserRouter, Navigate, Route, Routes, useLocation } from "react-router-dom";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import Index from "./pages/Index.tsx";
 import NotFound from "./pages/NotFound.tsx";
 import LearnMore from "./pages/LearnMore.tsx";
+import Login from "./pages/Login.tsx";
 import Register from "./pages/Register.tsx";
 import Assessment from "./pages/Assessment.tsx";
 import GamePlay from "./pages/GamePlay.tsx";
@@ -37,6 +38,7 @@ import AdminAuditLog from "./pages/admin/AuditLog.tsx";
 import AdminRoles from "./pages/admin/Roles.tsx";
 import AdminGameControl from "./pages/admin/GameControl.tsx";
 import { getCompletedAttempts, MAX_GAME_ATTEMPTS } from "./lib/gameSettings.ts";
+import { isDemoLoggedIn } from "./lib/demoAuth.ts";
 
 const queryClient = new QueryClient();
 
@@ -49,6 +51,12 @@ const RegisteredGameRoute = () => {
   return <GamePlay />;
 };
 
+const RegistrationRoute = () => {
+  const location = useLocation();
+  const redirect = `${location.pathname}${location.search}`;
+  return isDemoLoggedIn() ? <Register /> : <Navigate to={`/login?redirect=${encodeURIComponent(redirect)}`} replace />;
+};
+
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <TooltipProvider>
@@ -58,7 +66,8 @@ const App = () => (
         <Routes>
           <Route path="/" element={<Index />} />
           <Route path="/learn-more" element={<LearnMore />} />
-          <Route path="/register" element={<Register />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<RegistrationRoute />} />
           <Route path="/assessment" element={<Assessment />} />
           <Route path="/assessment/play" element={<RegisteredGameRoute />} />
           <Route path="/assessment/result" element={<Result />} />

@@ -2,8 +2,11 @@ import { Link } from "react-router-dom";
 import { ArrowRight, Code2, Gamepad2, GraduationCap, ShieldCheck } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Logo } from "@/components/Logo";
+import { isDemoLoggedIn } from "@/lib/demoAuth";
 
 const Landing = () => {
+  const registerTarget = isDemoLoggedIn() ? "/register" : "/login?redirect=/register";
+
   return (
     <div className="min-h-screen relative overflow-hidden bg-background font-mono">
       <header className="relative z-20 px-5 lg:px-10 py-5 flex items-center justify-between border-b border-border">
@@ -13,11 +16,16 @@ const Landing = () => {
           <a href="#how" className="hover:text-foreground transition-colors">Trail</a>
           <a href="#tracks" className="hover:text-foreground transition-colors">Tracks</a>
         </nav>
-        <Link to="/register">
+        <div className="flex items-center gap-2">
+        <Link to="/login?redirect=/register">
+          <Button variant="soft" size="sm">Login</Button>
+        </Link>
+        <Link to={registerTarget}>
           <Button variant="hero" size="sm" className="gap-1.5">
             <Gamepad2 className="h-4 w-4" /> Register for game
           </Button>
         </Link>
+        </div>
       </header>
 
       <main className="relative z-10 px-5 lg:px-10 py-14 lg:py-24 max-w-7xl mx-auto">
@@ -31,7 +39,7 @@ const Landing = () => {
             screening session before admin verification and cohort placement.
           </p>
           <div className="mt-8 flex flex-wrap items-center gap-3">
-            <Link to="/register">
+            <Link to={registerTarget}>
               <Button variant="hero" size="xl" className="gap-2">
                 <Gamepad2 className="h-5 w-5" /> Register for game
               </Button>
@@ -92,7 +100,7 @@ const Landing = () => {
                 Applications close in 14 days. Register for the qualifying game and start your journey.
               </p>
             </div>
-            <Link to="/register">
+            <Link to={registerTarget}>
               <Button variant="hero" size="xl" className="gap-2">
                 <Gamepad2 className="h-5 w-5" /> Register for game <ArrowRight className="h-5 w-5" />
               </Button>

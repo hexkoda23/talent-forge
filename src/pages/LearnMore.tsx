@@ -21,9 +21,13 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Logo } from "@/components/Logo";
+import { isDemoLoggedIn } from "@/lib/demoAuth";
 
-const LearnMore = () => (
-  <div className="min-h-screen bg-background font-mono">
+const LearnMore = () => {
+  const registerTarget = isDemoLoggedIn() ? "/register" : "/login?redirect=/register";
+
+  return (
+    <div className="min-h-screen bg-background font-mono">
     <header className="px-5 lg:px-10 py-5 flex items-center justify-between border-b border-border">
       <Logo />
       <Link to="/" className="text-sm text-muted-foreground hover:text-foreground inline-flex items-center gap-2">
@@ -164,7 +168,7 @@ const LearnMore = () => (
               result handling, and admin confirmation path.
             </p>
           </div>
-          <Link to="/register">
+          <Link to={registerTarget}>
             <Button variant="hero" size="xl" className="gap-2">
               <Gamepad2 className="h-5 w-5" /> Register for game <ArrowRight className="h-5 w-5" />
             </Button>
@@ -172,8 +176,9 @@ const LearnMore = () => (
         </div>
       </section>
     </main>
-  </div>
-);
+    </div>
+  );
+};
 
 const Metric = ({ label, value }: { label: string; value: string }) => (
   <div className="flex items-center justify-between gap-4 border-b border-border pb-3">

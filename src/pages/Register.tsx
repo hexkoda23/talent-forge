@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import {
   ArrowLeft,
   ArrowRight,
@@ -45,6 +45,8 @@ const codeZones = [
 
 const Register = () => {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const correctionMode = searchParams.get("correction") === "1";
   const [step, setStep] = useState(1);
   const [submitting, setSubmitting] = useState(false);
   const [countdown, setCountdown] = useState(3);
@@ -82,6 +84,11 @@ const Register = () => {
   const prev = () => setStep((s) => Math.max(1, s - 1));
 
   const submit = () => {
+    if (correctionMode) {
+      navigate("/status?state=review&correction=1");
+      return;
+    }
+
     setSubmitting(true);
     setCountdown(3);
   };
@@ -144,10 +151,16 @@ const Register = () => {
 
       <main className="flex-1 px-5 py-8 lg:py-12 max-w-4xl w-full mx-auto">
         <div className="mb-8">
-          <p className="text-sm font-mono uppercase tracking-widest text-secondary mb-3">// secure entry gate</p>
-          <h1 className="font-display text-3xl lg:text-5xl font-bold">Verify once. Play next.</h1>
+          <p className="text-sm font-mono uppercase tracking-widest text-secondary mb-3">
+            {correctionMode ? "// correction request" : "// secure entry gate"}
+          </p>
+          <h1 className="font-display text-3xl lg:text-5xl font-bold">
+            {correctionMode ? "Update your details." : "Verify once. Play next."}
+          </h1>
           <p className="text-muted-foreground mt-3 max-w-2xl">
-            TalentOS collects identity, school, address, NIN, document evidence, and your preferred Code Zone before the game opens.
+            {correctionMode
+              ? "Admin requested a correction. Update the wrong details or upload clearer documents, then submit again for approval."
+              : "TalentOS collects identity, school, address, NIN, document evidence, and your preferred Code Zone before the game opens."}
           </p>
         </div>
 
@@ -309,7 +322,9 @@ const Register = () => {
               <div className="rounded-xl border border-primary/30 bg-primary/10 p-4 flex gap-3 text-sm text-muted-foreground">
                 <MapPin className="h-5 w-5 text-primary shrink-0 mt-0.5" />
                 <p>
-                  Your selected Code Zone is attached to your application. In production, this registration would place you on a shared countdown page until the official game time. For this demo, the countdown lasts 3 seconds before the game opens.
+                  {correctionMode
+                    ? "After submitting these corrections, your application returns to pending approval for admin to verify the new details."
+                    : "Your selected Code Zone is attached to your application. In production, this registration would place you on a shared countdown page until the official game time. For this demo, the countdown lasts 3 seconds before the game opens."}
                 </p>
               </div>
             </div>
@@ -325,7 +340,7 @@ const Register = () => {
               </Button>
             ) : (
               <Button variant="hero" size="lg" onClick={submit} disabled={!canContinue || submitting} className="gap-2">
-                Register for game <ArrowRight className="h-4 w-4" />
+                {correctionMode ? "Submit corrections" : "Register for game"} <ArrowRight className="h-4 w-4" />
               </Button>
             )}
           </div>

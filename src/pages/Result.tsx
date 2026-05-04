@@ -45,25 +45,29 @@ const Result = () => {
 
           <div className={`mt-8 inline-flex items-center gap-2 px-4 py-2 border text-sm ${qualified ? "bg-primary/10 text-primary border-primary/40" : "bg-warning/10 text-warning border-warning/40"}`}>
             <Trophy className="h-4 w-4" />
-            {qualified ? "Passed Cut Off" : attemptsRemaining > 0 ? "Try Again" : "Trials Finished"}
+            {qualified ? "Congratulations, You Passed" : attemptsRemaining > 0 ? "Try Again" : "Failed"}
           </div>
           <p className="text-xs text-muted-foreground mt-3 max-w-sm">
             {qualified
-              ? "You scored 70% or higher. Your file will now wait for admin confirmation. Await email from admin."
+              ? "Congratulations, you passed both games and reached the cut off. Your application is pending admin approval. Await mail from admin."
               : attemptsRemaining > 0
-                ? `You did not reach the 70% cut off. Try again now. ${attemptsRemaining} trial${attemptsRemaining === 1 ? "" : "s"} remaining.`
-                : "You did not reach the 70% cut off within three trials. Await email from admin for the next instruction."}
+                ? `You did not reach the auto pass cut off yet. Try again now. ${attemptsRemaining} trial${attemptsRemaining === 1 ? "" : "s"} remaining.`
+                : "You failed to reach the cut off after three trials."}
           </p>
         </section>
 
         <div className="mt-8">
-          {qualified || attemptsRemaining === 0 ? (
+          {qualified ? (
             <Button variant="hero" size="xl" className="gap-2" onClick={() => setProcessing(true)}>
               Submit for admin confirmation <ArrowRight className="h-5 w-5" />
             </Button>
-          ) : (
+          ) : attemptsRemaining > 0 ? (
             <Button variant="hero" size="xl" className="gap-2" onClick={() => navigate("/assessment/play")}>
               Try again - {attemptsRemaining} trial{attemptsRemaining === 1 ? "" : "s"} remaining <ArrowRight className="h-5 w-5" />
+            </Button>
+          ) : (
+            <Button variant="hero" size="xl" className="gap-2" onClick={() => navigate("/status?state=failed")}>
+              View failed status <ArrowRight className="h-5 w-5" />
             </Button>
           )}
         </div>
